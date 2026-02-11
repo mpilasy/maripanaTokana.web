@@ -11,6 +11,7 @@
 
 	// Detect if geolocation is available (not available in some in-app browsers)
 	let geoAvailable = typeof navigator !== 'undefined' && !!navigator.geolocation;
+	let geoError = $state<string | null>(null);
 
 	// Find closest supported locale for the browser's language
 	function findBrowserLocaleTag(): string | null {
@@ -37,9 +38,8 @@
 		loaders[browserLocaleTag]?.().then(mod => browserStrings = mod.default);
 	}
 
-	// Show secondary text when app is not in mg AND browser language differs from app language
+	// Show secondary text when browser language differs from app language
 	let showSecondary = $derived(
-		SUPPORTED_LOCALES[$localeIndex]?.tag !== 'mg' &&
 		browserLocaleTag != null &&
 		browserLocaleTag !== SUPPORTED_LOCALES[$localeIndex]?.tag &&
 		browserStrings != null
@@ -47,12 +47,20 @@
 
 	function requestPermission() {
 		if (!navigator.geolocation) return;
+		geoError = null;
 		navigator.geolocation.getCurrentPosition(
 			() => onGranted(),
 			(err) => {
 				console.error('Geolocation error:', err);
+				if (err.code === err.PERMISSION_DENIED) {
+					geoError = 'permission_denied';
+				} else if (err.code === err.POSITION_UNAVAILABLE) {
+					geoError = 'position_unavailable';
+				} else {
+					geoError = 'geo_timeout';
+				}
 			},
-			{ enableHighAccuracy: true }
+			{ enableHighAccuracy: true, timeout: 10000 }
 		);
 	}
 
@@ -74,11 +82,15 @@
 		</div>
 	{/if}
 
+	{#if geoError}
+		<p class="geo-error">{$_(geoError)}</p>
+	{/if}
+
 	{#if geoAvailable}
 		<button onclick={requestPermission}>{$_('grant_permission')}</button>
 	{/if}
 
-	<button class="open-browser-btn" onclick={openInBrowser}>
+	<button class="open-browser-btn" class:prominent={geoError != null || !geoAvailable} onclick={openInBrowser}>
 		{$_('open_in_browser')}
 	</button>
 </div>
@@ -143,6 +155,13 @@
 		background: rgba(255,255,255,0.25);
 	}
 
+	.geo-error {
+		color: rgba(255,180,180,0.9);
+		font-size: 14px;
+		margin-bottom: 16px;
+		padding: 0 16px;
+	}
+
 	.open-browser-btn {
 		margin-top: 12px;
 		background: none;
@@ -155,5 +174,21 @@
 
 	.open-browser-btn:hover {
 		color: rgba(255,255,255,0.6);
+	}
+
+	.open-browser-btn.prominent {
+		margin-top: 16px;
+		padding: 14px 36px;
+		background: rgba(255,255,255,0.15);
+		color: white;
+		border: 1px solid rgba(255,255,255,0.3);
+		border-radius: 12px;
+		font-size: 16px;
+		text-decoration: none;
+	}
+
+	.open-browser-btn.prominent:hover {
+		background: rgba(255,255,255,0.25);
+		color: white;
 	}
 </style>
