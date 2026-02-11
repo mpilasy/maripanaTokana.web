@@ -183,12 +183,17 @@ Tap the font icon (Aa) in the footer to cycle through 22 font pairings.
 
 ## 11. PWA / Installability
 
-### Production build required:
+### Via npm preview:
 ```bash
 npm run build && npm run preview
 ```
-
 Open `http://localhost:4173` in Chrome.
+
+### Via Docker:
+```bash
+docker compose up -d --build
+```
+Open `http://localhost:3080` in Chrome.
 
 - [ ] Service worker registers (check DevTools → Application → Service Workers)
 - [ ] Manifest is detected (check DevTools → Application → Manifest)
