@@ -10,14 +10,16 @@ const CACHE_APP = `app-${version}`;
 const CACHE_API = 'api-cache';
 const CACHE_FONTS = 'font-cache';
 
-// Install: precache app shell
+// Install: precache app shell, activate immediately
 sw.addEventListener('install', (event) => {
 	event.waitUntil(
-		caches.open(CACHE_APP).then((cache) => cache.addAll([...build, ...files]))
+		caches.open(CACHE_APP)
+			.then((cache) => cache.addAll([...build, ...files]))
+			.then(() => sw.skipWaiting())
 	);
 });
 
-// Activate: clean old caches
+// Activate: clean old caches, claim all clients immediately
 sw.addEventListener('activate', (event) => {
 	event.waitUntil(
 		caches.keys().then((keys) =>
@@ -26,7 +28,7 @@ sw.addEventListener('activate', (event) => {
 					.filter((key) => key !== CACHE_APP && key !== CACHE_API && key !== CACHE_FONTS)
 					.map((key) => caches.delete(key))
 			)
-		)
+		).then(() => sw.clients.claim())
 	);
 });
 
