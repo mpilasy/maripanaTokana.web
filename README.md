@@ -54,6 +54,29 @@ npm run preview      # Preview production build
 npm run check        # Type-check with svelte-check
 ```
 
+## Deployment (Docker)
+
+Multi-stage Docker build: node builds the static site, Caddy serves it.
+
+```bash
+docker compose up -d --build    # Build and run on port 3080 (default)
+```
+
+To use a custom port, create a `.env` file or pass it inline:
+
+```bash
+PORT=8080 docker compose up -d --build
+```
+
+The container (`maripanaTokana.web`) exposes port 80, mapped to host port `$PORT` (default 3080). Point your reverse proxy (e.g., Nginx Proxy Manager) at `http://<host>:<port>`.
+
+```
+Dockerfile          # Multi-stage: node:22-alpine → caddy:alpine
+Caddyfile           # SPA fallback + no-cache for service worker
+docker-compose.yml  # Container config (port 3080)
+.dockerignore       # Excludes node_modules, .git, build, .svelte-kit
+```
+
 ## Architecture
 
 Single-page static SvelteKit app. No server-side logic.

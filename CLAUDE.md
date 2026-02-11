@@ -19,6 +19,16 @@ npm run preview      # Preview production build
 npm run check        # Type-check with svelte-check
 ```
 
+## Deployment
+```bash
+docker compose up -d --build          # Default port 3080
+PORT=8080 docker compose up -d --build  # Custom port via env
+```
+- **Dockerfile:** Multi-stage — `node:22-alpine` builds static site, `caddy:alpine` serves it
+- **Caddyfile:** SPA fallback (`try_files {path} /index.html`), no-cache for `service-worker.js`
+- **docker-compose.yml:** Container `maripanaTokana.web`, port `${PORT:-3080}:80`, `restart: unless-stopped`
+- Designed to sit behind a reverse proxy (e.g., Nginx Proxy Manager) that handles TLS
+
 ## Architecture
 Single-page SvelteKit app. No server-side logic — fully static.
 
