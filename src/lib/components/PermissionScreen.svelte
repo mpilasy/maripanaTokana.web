@@ -9,6 +9,9 @@
 
 	let { onGranted }: Props = $props();
 
+	// Detect if geolocation is available (not available in some in-app browsers)
+	let geoAvailable = typeof navigator !== 'undefined' && !!navigator.geolocation;
+
 	// Find closest supported locale for the browser's language
 	function findBrowserLocaleTag(): string | null {
 		if (typeof navigator === 'undefined') return null;
@@ -43,13 +46,20 @@
 	);
 
 	function requestPermission() {
+		if (!navigator.geolocation) return;
 		navigator.geolocation.getCurrentPosition(
 			() => onGranted(),
 			(err) => {
-				console.error('Geolocation permission denied:', err);
+				console.error('Geolocation error:', err);
 			},
 			{ enableHighAccuracy: true }
 		);
+	}
+
+	function openInBrowser() {
+		// Try to force open in system browser
+		window.open(window.location.href, '_system') ||
+		window.open(window.location.href, '_blank');
 	}
 </script>
 
@@ -64,7 +74,13 @@
 		</div>
 	{/if}
 
-	<button onclick={requestPermission}>{$_('grant_permission')}</button>
+	{#if geoAvailable}
+		<button onclick={requestPermission}>{$_('grant_permission')}</button>
+	{/if}
+
+	<button class="open-browser-btn" onclick={openInBrowser}>
+		{$_('open_in_browser')}
+	</button>
 </div>
 
 <style>
@@ -125,5 +141,19 @@
 
 	button:hover {
 		background: rgba(255,255,255,0.25);
+	}
+
+	.open-browser-btn {
+		margin-top: 12px;
+		background: none;
+		border: none;
+		color: rgba(255,255,255,0.4);
+		font-size: 13px;
+		text-decoration: underline;
+		padding: 8px 16px;
+	}
+
+	.open-browser-btn:hover {
+		color: rgba(255,255,255,0.6);
 	}
 </style>

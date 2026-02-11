@@ -33,6 +33,7 @@
 	"permission_title": "需要位置权限",
 	"permission_message": "此应用需要位置权限以显示您所在地区的天气。",
 	"grant_permission": "授予权限",
+	"open_in_browser": "在浏览器中打开",
 	"error_title": "错误",
 	"error_retry": "重试",
 	"error_fetch_weather": "获取天气失败",

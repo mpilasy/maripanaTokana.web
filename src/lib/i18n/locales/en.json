@@ -33,6 +33,7 @@
 	"permission_title": "Location Permission Required",
 	"permission_message": "This app needs location access to show weather for your area.",
 	"grant_permission": "Grant Permission",
+	"open_in_browser": "Open in browser",
 	"error_title": "Error",
 	"error_retry": "Retry",
 	"error_fetch_weather": "Failed to fetch weather",

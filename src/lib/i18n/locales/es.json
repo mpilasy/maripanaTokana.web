@@ -33,6 +33,7 @@
 	"permission_title": "Permiso de ubicacion requerido",
 	"permission_message": "Esta aplicacion necesita acceso a la ubicacion para mostrar el clima de tu zona.",
 	"grant_permission": "Conceder permiso",
+	"open_in_browser": "Abrir en el navegador",
 	"error_title": "Error",
 	"error_retry": "Reintentar",
 	"error_fetch_weather": "No se pudo obtener el clima",

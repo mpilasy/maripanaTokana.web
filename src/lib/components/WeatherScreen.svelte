@@ -68,12 +68,16 @@
 
 	onMount(() => {
 		// Check if geolocation is available and permission was already granted
-		if (navigator.permissions) {
-			navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-				if (result.state === 'granted') {
-					doFetchWeather();
-				}
-			});
+		if (navigator.permissions?.query) {
+			navigator.permissions.query({ name: 'geolocation' })
+				.then((result) => {
+					if (result.state === 'granted') {
+						doFetchWeather();
+					}
+				})
+				.catch(() => {
+					// permissions.query() throws in some embedded browsers — ignore
+				});
 		}
 	});
 </script>
