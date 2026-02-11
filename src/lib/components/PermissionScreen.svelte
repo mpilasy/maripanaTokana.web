@@ -45,12 +45,33 @@
 		browserStrings != null
 	);
 
+	let copied = $state(false);
+
 	function requestPermission() {
 		if (!navigator.geolocation) return;
 		geoError = null;
+
+		// Manual fallback timeout — in some in-app browsers, getCurrentPosition
+		// never calls either callback, so the browser's own timeout never fires
+		let settled = false;
+		const fallbackTimer = setTimeout(() => {
+			if (!settled) {
+				settled = true;
+				geoError = 'geo_timeout';
+			}
+		}, 12000);
+
 		navigator.geolocation.getCurrentPosition(
-			() => onGranted(),
+			() => {
+				if (settled) return;
+				settled = true;
+				clearTimeout(fallbackTimer);
+				onGranted();
+			},
 			(err) => {
+				if (settled) return;
+				settled = true;
+				clearTimeout(fallbackTimer);
 				console.error('Geolocation error:', err);
 				if (err.code === err.PERMISSION_DENIED) {
 					geoError = 'permission_denied';
@@ -64,10 +85,22 @@
 		);
 	}
 
-	function openInBrowser() {
-		// Try to force open in system browser
-		window.open(window.location.href, '_system') ||
-		window.open(window.location.href, '_blank');
+	async function copyLink() {
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			copied = true;
+			setTimeout(() => copied = false, 3000);
+		} catch {
+			// Fallback: select a temporary input
+			const input = document.createElement('input');
+			input.value = window.location.href;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand('copy');
+			document.body.removeChild(input);
+			copied = true;
+			setTimeout(() => copied = false, 3000);
+		}
 	}
 </script>
 
@@ -90,9 +123,14 @@
 		<button onclick={requestPermission}>{$_('grant_permission')}</button>
 	{/if}
 
-	<button class="open-browser-btn" class:prominent={geoError != null || !geoAvailable} onclick={openInBrowser}>
-		{$_('open_in_browser')}
+	<button class="copy-link-btn" class:prominent={geoError != null || !geoAvailable} onclick={copyLink}>
+		{#if copied}
+			{$_('link_copied')}
+		{:else}
+			{$_('copy_link')}
+		{/if}
 	</button>
+	<p class="copy-hint">{$_('copy_link_hint')}</p>
 </div>
 
 <style>
@@ -162,7 +200,7 @@
 		padding: 0 16px;
 	}
 
-	.open-browser-btn {
+	.copy-link-btn {
 		margin-top: 12px;
 		background: none;
 		border: none;
@@ -172,11 +210,11 @@
 		padding: 8px 16px;
 	}
 
-	.open-browser-btn:hover {
+	.copy-link-btn:hover {
 		color: rgba(255,255,255,0.6);
 	}
 
-	.open-browser-btn.prominent {
+	.copy-link-btn.prominent {
 		margin-top: 16px;
 		padding: 14px 36px;
 		background: rgba(255,255,255,0.15);
@@ -187,8 +225,15 @@
 		text-decoration: none;
 	}
 
-	.open-browser-btn.prominent:hover {
+	.copy-link-btn.prominent:hover {
 		background: rgba(255,255,255,0.25);
 		color: white;
+	}
+
+	.copy-hint {
+		font-size: 12px;
+		color: rgba(255,255,255,0.35);
+		margin-bottom: 0;
+		margin-top: 0;
 	}
 </style>
