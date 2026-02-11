@@ -1,5 +1,3 @@
-import html2canvas from 'html2canvas';
-
 const BG_COLOR = '#0E0B3D';
 const PADDING = 32;
 const HEADER_GAP = 16;
@@ -13,6 +11,9 @@ export async function captureAndShare(
 	locationName: string,
 	dateStr: string
 ): Promise<void> {
+	// Dynamic import — html2canvas accesses browser APIs and can't be imported at module level
+	const { default: html2canvas } = await import('html2canvas');
+
 	// Capture the element
 	const capture = await html2canvas(element, {
 		backgroundColor: BG_COLOR,
