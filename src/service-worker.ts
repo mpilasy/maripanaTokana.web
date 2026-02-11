@@ -12,13 +12,9 @@ const CACHE_FONTS = 'font-cache';
 
 const APP_ASSETS = new Set([...build, ...files]);
 
-// Install: precache app shell, activate immediately
-sw.addEventListener('install', (event) => {
-	event.waitUntil(
-		caches.open(CACHE_APP)
-			.then((cache) => cache.addAll([...APP_ASSETS]))
-			.then(() => sw.skipWaiting())
-	);
+// Install: activate immediately (no precaching — cache populates via NetworkFirst)
+sw.addEventListener('install', () => {
+	sw.skipWaiting();
 });
 
 // Activate: clean old caches, claim all clients immediately
