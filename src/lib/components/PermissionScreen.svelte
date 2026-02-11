@@ -192,26 +192,33 @@
 	}
 
 	button {
-		padding: 14px 36px;
-		background: rgba(255,255,255,0.15);
-		color: white;
-		border: 1px solid rgba(255,255,255,0.3);
-		border-radius: 12px;
-		font-size: 16px;
+		padding: 16px 48px;
+		background: white;
+		color: #0E0B3D;
+		border: none;
+		border-radius: 14px;
+		font-size: 18px;
+		font-weight: 700;
 		cursor: pointer;
-		transition: background 0.2s;
+		transition: background 0.2s, transform 0.1s;
+		box-shadow: 0 4px 20px rgba(255,255,255,0.25);
 	}
 
 	button:hover {
-		background: rgba(255,255,255,0.25);
+		background: rgba(255,255,255,0.9);
+	}
+
+	button:active {
+		transform: scale(0.97);
 	}
 
 	.btn-secondary {
 		display: block;
 		font-size: 11px;
-		opacity: 0.45;
+		opacity: 0.4;
 		margin-top: 4px;
 		font-weight: 400;
+		color: inherit;
 	}
 
 	.hint-secondary {
