@@ -1,11 +1,46 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
+	import { localeIndex } from '$lib/stores/preferences';
+	import { SUPPORTED_LOCALES } from '$lib/i18n/index';
 
 	interface Props {
 		onGranted: () => void;
 	}
 
 	let { onGranted }: Props = $props();
+
+	// Find closest supported locale for the browser's language
+	function findBrowserLocaleTag(): string | null {
+		if (typeof navigator === 'undefined') return null;
+		const lang = navigator.language.split('-')[0].toLowerCase();
+		return SUPPORTED_LOCALES.find(l => l.tag === lang)?.tag ?? null;
+	}
+
+	const browserLocaleTag = findBrowserLocaleTag();
+	let browserStrings = $state<Record<string, string> | null>(null);
+
+	// Load browser locale strings
+	if (browserLocaleTag) {
+		const loaders: Record<string, () => Promise<{ default: Record<string, string> }>> = {
+			en: () => import('$lib/i18n/locales/en.json'),
+			mg: () => import('$lib/i18n/locales/mg.json'),
+			ar: () => import('$lib/i18n/locales/ar.json'),
+			es: () => import('$lib/i18n/locales/es.json'),
+			fr: () => import('$lib/i18n/locales/fr.json'),
+			hi: () => import('$lib/i18n/locales/hi.json'),
+			ne: () => import('$lib/i18n/locales/ne.json'),
+			zh: () => import('$lib/i18n/locales/zh.json'),
+		};
+		loaders[browserLocaleTag]?.().then(mod => browserStrings = mod.default);
+	}
+
+	// Show secondary text when app is not in mg AND browser language differs from app language
+	let showSecondary = $derived(
+		SUPPORTED_LOCALES[$localeIndex]?.tag !== 'mg' &&
+		browserLocaleTag != null &&
+		browserLocaleTag !== SUPPORTED_LOCALES[$localeIndex]?.tag &&
+		browserStrings != null
+	);
 
 	function requestPermission() {
 		navigator.geolocation.getCurrentPosition(
@@ -21,6 +56,14 @@
 <div class="permission-screen">
 	<h2>{$_('permission_title')}</h2>
 	<p>{$_('permission_message')}</p>
+
+	{#if showSecondary && browserStrings}
+		<div class="secondary-block">
+			<h3>{browserStrings.permission_title}</h3>
+			<p>{browserStrings.permission_message}</p>
+		</div>
+	{/if}
+
 	<button onclick={requestPermission}>{$_('grant_permission')}</button>
 </div>
 
@@ -49,6 +92,24 @@
 		margin-bottom: 24px;
 		padding: 0 16px;
 		line-height: 1.5;
+	}
+
+	.secondary-block {
+		margin-bottom: 24px;
+		opacity: 0.45;
+	}
+
+	.secondary-block h3 {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 600;
+		margin-bottom: 8px;
+	}
+
+	.secondary-block p {
+		font-size: 13px;
+		margin-bottom: 0;
+		line-height: 1.4;
 	}
 
 	button {
