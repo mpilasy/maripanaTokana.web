@@ -5,15 +5,15 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && node scripts/inline-assets.js",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"dependencies": {
-		"svelte-i18n": "^4.0.0",
-		"html2canvas": "^1.4.1"
+		"html2canvas": "^1.4.1",
+		"svelte-i18n": "^4.0.0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.0",
