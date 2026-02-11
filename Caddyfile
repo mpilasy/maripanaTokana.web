@@ -1,7 +1,10 @@
 :80 {
 	root * /srv
 	file_server
-	try_files {path} /index.html
+
+	# Don't apply SPA fallback to .well-known (Let's Encrypt ACME challenge)
+	@notWellKnown not path /.well-known/*
+	try_files @notWellKnown {path} /index.html
 
 	header /service-worker.js Cache-Control "no-cache, no-store, must-revalidate"
 }
