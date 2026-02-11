@@ -1,0 +1,309 @@
+<script lang="ts">
+	import { _ } from 'svelte-i18n';
+	import { weatherState, isRefreshing, doFetchWeather } from '$lib/stores/weather';
+	import { metricPrimary, fontIndex, localeIndex, toggleUnits, cycleFont, cycleLanguage } from '$lib/stores/preferences';
+	import { SUPPORTED_LOCALES, localizeDigits } from '$lib/i18n/index';
+	import { fontPairings } from '$lib/fonts';
+	import PermissionScreen from './PermissionScreen.svelte';
+	import HeroCard from './HeroCard.svelte';
+	import HourlyForecast from './HourlyForecast.svelte';
+	import DailyForecast from './DailyForecast.svelte';
+	import CurrentConditions from './CurrentConditions.svelte';
+	import CollapsibleSection from './CollapsibleSection.svelte';
+	import Footer from './Footer.svelte';
+	import { onMount } from 'svelte';
+
+	let pullStartY = $state(0);
+	let pullDelta = $state(0);
+	let isPulling = $state(false);
+	let scrollContainer = $state<HTMLElement | null>(null);
+
+	function loc(s: string): string {
+		return localizeDigits(s, SUPPORTED_LOCALES[$localeIndex]);
+	}
+
+	function formatDate(timestamp: number): string {
+		const locale = SUPPORTED_LOCALES[$localeIndex];
+		const d = new Date(timestamp);
+		// Use Intl for day/month names in correct locale, but localize digits ourselves
+		const formatted = new Intl.DateTimeFormat(locale.tag, {
+			weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+		}).format(d);
+		return formatted;
+	}
+
+	function formatTime(timestamp: number): string {
+		const d = new Date(timestamp);
+		const hh = String(d.getHours()).padStart(2, '0');
+		const mm = String(d.getMinutes()).padStart(2, '0');
+		return `${hh}:${mm}`;
+	}
+
+	function handleTouchStart(e: TouchEvent) {
+		if (scrollContainer && scrollContainer!.scrollTop <= 0) {
+			pullStartY = e.touches[0].clientY;
+			isPulling = true;
+		}
+	}
+
+	function handleTouchMove(e: TouchEvent) {
+		if (!isPulling) return;
+		pullDelta = Math.max(0, e.touches[0].clientY - pullStartY);
+	}
+
+	function handleTouchEnd() {
+		if (pullDelta > 80) {
+			doFetchWeather();
+		}
+		pullDelta = 0;
+		isPulling = false;
+	}
+
+	onMount(() => {
+		// Check if geolocation is available and permission was already granted
+		if (navigator.permissions) {
+			navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+				if (result.state === 'granted') {
+					doFetchWeather();
+				}
+			});
+		}
+	});
+</script>
+
+<div class="weather-screen">
+	<!-- Blue Marble background -->
+	<div class="bg-marble"></div>
+
+	{#if $weatherState.kind === 'permission'}
+		<PermissionScreen onGranted={doFetchWeather} />
+
+	{:else if $weatherState.kind === 'loading'}
+		<div class="center">
+			<div class="spinner"></div>
+		</div>
+
+	{:else if $weatherState.kind === 'success'}
+		{@const data = $weatherState.data}
+		<!-- Pull indicator -->
+		{#if pullDelta > 0}
+			<div class="pull-indicator" style:transform="translateY({Math.min(pullDelta, 100)}px)">
+				<div class="pull-spinner" class:active={pullDelta > 80}></div>
+			</div>
+		{/if}
+
+		{#if $isRefreshing}
+			<div class="refresh-bar">
+				<div class="refresh-spinner"></div>
+			</div>
+		{/if}
+
+		<div class="content-wrapper">
+			<!-- Fixed header -->
+			<div class="header">
+				<h1 class="location-name">{data.locationName}</h1>
+				<p class="date">{formatDate(data.timestamp)}</p>
+				<p class="updated">{$_('updated_time', { values: { time: loc(formatTime(data.timestamp)) } })}</p>
+			</div>
+
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<!-- Scrollable content -->
+			<div
+				class="scroll-area"
+				role="region"
+				bind:this={scrollContainer}
+				ontouchstart={handleTouchStart}
+				ontouchmove={handleTouchMove}
+				ontouchend={handleTouchEnd}
+			>
+				<HeroCard {data} metricPrimary={$metricPrimary} {loc} onToggleUnits={toggleUnits} />
+
+				{#if data.hourlyForecast.length > 0}
+					<CollapsibleSection title={$_('section_hourly_forecast')} expanded={true}>
+						<HourlyForecast
+							forecasts={data.hourlyForecast}
+							metricPrimary={$metricPrimary}
+							dailySunrise={data.dailySunrise}
+							dailySunset={data.dailySunset}
+							{loc}
+							onToggleUnits={toggleUnits}
+						/>
+					</CollapsibleSection>
+				{/if}
+
+				{#if data.dailyForecast.length > 0}
+					<CollapsibleSection title={$_('section_this_week')}>
+						<DailyForecast
+							forecasts={data.dailyForecast}
+							metricPrimary={$metricPrimary}
+							localeTag={SUPPORTED_LOCALES[$localeIndex].tag}
+							{loc}
+							onToggleUnits={toggleUnits}
+						/>
+					</CollapsibleSection>
+				{/if}
+
+				<CollapsibleSection title={$_('section_current_conditions')}>
+					<CurrentConditions {data} metricPrimary={$metricPrimary} {loc} onToggleUnits={toggleUnits} />
+				</CollapsibleSection>
+
+				<div class="scroll-bottom-pad"></div>
+			</div>
+
+			<!-- Fixed footer -->
+			<Footer
+				fontName={fontPairings[$fontIndex].name}
+				currentFlag={SUPPORTED_LOCALES[$localeIndex].flag}
+				onCycleFont={cycleFont}
+				onCycleLanguage={cycleLanguage}
+			/>
+		</div>
+
+	{:else if $weatherState.kind === 'error'}
+		<div class="center error-state">
+			<h2>{$_('error_title')}</h2>
+			<p>{$_($weatherState.message)}</p>
+			<button onclick={doFetchWeather}>{$_('error_retry')}</button>
+		</div>
+	{/if}
+</div>
+
+<style>
+	.weather-screen {
+		width: 100%;
+		height: 100%;
+		position: relative;
+	}
+
+	.bg-marble {
+		position: absolute;
+		inset: 0;
+		background: url('/bg-blue-marble.webp') center/cover no-repeat;
+		opacity: 0.12;
+		pointer-events: none;
+	}
+
+	.center {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		gap: 16px;
+	}
+
+	.spinner {
+		width: 40px;
+		height: 40px;
+		border: 3px solid rgba(255,255,255,0.2);
+		border-top-color: white;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin { to { transform: rotate(360deg); } }
+
+	.content-wrapper {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		position: relative;
+		z-index: 1;
+		padding: 0 24px;
+		padding-top: env(safe-area-inset-top);
+	}
+
+	.header {
+		padding-top: 24px;
+		flex-shrink: 0;
+	}
+
+	.location-name {
+		font-family: var(--font-display);
+		font-size: 32px;
+		font-weight: 700;
+		color: white;
+	}
+
+	.date {
+		font-size: 16px;
+		color: rgba(255,255,255,0.7);
+	}
+
+	.updated {
+		font-size: 12px;
+		color: rgba(255,255,255,0.4);
+	}
+
+	.scroll-area {
+		flex: 1;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding: 24px 0;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.scroll-bottom-pad {
+		height: 24px;
+	}
+
+	.pull-indicator {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 10;
+	}
+
+	.pull-spinner {
+		width: 24px;
+		height: 24px;
+		border: 2px solid rgba(255,255,255,0.3);
+		border-top-color: white;
+		border-radius: 50%;
+		transition: opacity 0.2s;
+	}
+
+	.pull-spinner.active {
+		animation: spin 0.8s linear infinite;
+	}
+
+	.refresh-bar {
+		position: absolute;
+		top: env(safe-area-inset-top);
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 10;
+		padding: 8px;
+	}
+
+	.refresh-spinner {
+		width: 20px;
+		height: 20px;
+		border: 2px solid rgba(255,255,255,0.3);
+		border-top-color: white;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	.error-state h2 {
+		font-family: var(--font-display);
+		font-size: 24px;
+		font-weight: 700;
+	}
+
+	.error-state p {
+		color: rgba(255,255,255,0.7);
+	}
+
+	.error-state button {
+		margin-top: 16px;
+		padding: 12px 32px;
+		background: rgba(255,255,255,0.15);
+		color: white;
+		border: 1px solid rgba(255,255,255,0.3);
+		border-radius: 12px;
+		font-size: 16px;
+		cursor: pointer;
+	}
+</style>
