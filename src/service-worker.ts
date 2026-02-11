@@ -10,11 +10,13 @@ const CACHE_APP = `app-${version}`;
 const CACHE_API = 'api-cache';
 const CACHE_FONTS = 'font-cache';
 
+const APP_ASSETS = new Set([...build, ...files]);
+
 // Install: precache app shell, activate immediately
 sw.addEventListener('install', (event) => {
 	event.waitUntil(
 		caches.open(CACHE_APP)
-			.then((cache) => cache.addAll([...build, ...files]))
+			.then((cache) => cache.addAll([...APP_ASSETS]))
 			.then(() => sw.skipWaiting())
 	);
 });
@@ -68,10 +70,19 @@ sw.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	// App shell: CacheFirst
+	// App shell: NetworkFirst (use network, fall back to cache for offline)
 	if (url.origin === sw.location.origin) {
 		event.respondWith(
-			caches.match(event.request).then((cached) => cached || fetch(event.request))
+			fetch(event.request)
+				.then((response) => {
+					// Update cache with fresh response
+					if (APP_ASSETS.has(url.pathname)) {
+						const clone = response.clone();
+						caches.open(CACHE_APP).then((cache) => cache.put(event.request, clone));
+					}
+					return response;
+				})
+				.catch(() => caches.match(event.request).then((r) => r || caches.match('/index.html')).then((r) => r || new Response('Offline', { status: 503 })))
 		);
 	}
 });
