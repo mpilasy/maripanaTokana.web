@@ -33,6 +33,7 @@
 				</svg>
 			</button>
 		{/if}
+		<span class="spacer"></span>
 		<span class="chevron" class:expanded={isExpanded}>&#9660;</span>
 	</div>
 
@@ -61,6 +62,9 @@
 		font-size: 20px;
 		font-weight: 700;
 		color: white;
+	}
+
+	.spacer {
 		flex: 1;
 	}
 
