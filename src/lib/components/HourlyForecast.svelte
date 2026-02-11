@@ -53,10 +53,12 @@
 <style>
 	.hourly-row {
 		display: flex;
+		flex-wrap: nowrap;
 		gap: 12px;
 		overflow-x: auto;
 		scroll-snap-type: x mandatory;
 		padding: 8px 0;
+		max-width: 100%;
 		-webkit-overflow-scrolling: touch;
 	}
 

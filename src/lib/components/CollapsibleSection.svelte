@@ -60,5 +60,6 @@
 
 	.section-content {
 		padding-top: 8px;
+		min-width: 0;
 	}
 </style>
