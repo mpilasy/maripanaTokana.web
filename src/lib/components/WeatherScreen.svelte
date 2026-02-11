@@ -13,6 +13,36 @@
 	import { captureAndShare } from '$lib/share';
 	import { onMount } from 'svelte';
 
+	// Browser locale detection for secondary language on error screen
+	function findBrowserLocaleTag(): string | null {
+		if (typeof navigator === 'undefined') return null;
+		const lang = navigator.language.split('-')[0].toLowerCase();
+		return SUPPORTED_LOCALES.find(l => l.tag === lang)?.tag ?? null;
+	}
+
+	const browserLocaleTag = findBrowserLocaleTag();
+	let browserStrings = $state<Record<string, string> | null>(null);
+
+	if (browserLocaleTag) {
+		const loaders: Record<string, () => Promise<{ default: Record<string, string> }>> = {
+			en: () => import('$lib/i18n/locales/en.json'),
+			mg: () => import('$lib/i18n/locales/mg.json'),
+			ar: () => import('$lib/i18n/locales/ar.json'),
+			es: () => import('$lib/i18n/locales/es.json'),
+			fr: () => import('$lib/i18n/locales/fr.json'),
+			hi: () => import('$lib/i18n/locales/hi.json'),
+			ne: () => import('$lib/i18n/locales/ne.json'),
+			zh: () => import('$lib/i18n/locales/zh.json'),
+		};
+		loaders[browserLocaleTag]?.().then(mod => browserStrings = mod.default);
+	}
+
+	let showSecondary = $derived(
+		browserLocaleTag != null &&
+		browserLocaleTag !== SUPPORTED_LOCALES[$localeIndex]?.tag &&
+		browserStrings != null
+	);
+
 	let pullStartY = $state(0);
 	let pullDelta = $state(0);
 	let isPulling = $state(false);
@@ -161,7 +191,18 @@
 		<div class="center error-state">
 			<h2>{$_('error_title')}</h2>
 			<p>{$_($weatherState.message)}</p>
-			<button onclick={doFetchWeather}>{$_('error_retry')}</button>
+			{#if showSecondary && browserStrings}
+				<div class="secondary-block">
+					<h3>{browserStrings.error_title}</h3>
+					<p>{browserStrings[$weatherState.message]}</p>
+				</div>
+			{/if}
+			<button onclick={doFetchWeather}>
+				{$_('error_retry')}
+				{#if showSecondary && browserStrings}
+					<span class="btn-secondary">{browserStrings.error_retry}</span>
+				{/if}
+			</button>
 		</div>
 	{/if}
 </div>
@@ -283,6 +324,32 @@
 		border-top-color: white;
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
+	}
+
+	.secondary-block {
+		opacity: 0.45;
+		text-align: center;
+		padding: 0 16px;
+	}
+
+	.secondary-block h3 {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 600;
+		margin-bottom: 8px;
+	}
+
+	.secondary-block p {
+		font-size: 13px;
+		line-height: 1.4;
+	}
+
+	.btn-secondary {
+		display: block;
+		font-size: 11px;
+		opacity: 0.45;
+		margin-top: 4px;
+		font-weight: 400;
 	}
 
 	.error-state h2 {
