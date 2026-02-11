@@ -11,6 +11,7 @@
 	import CurrentConditions from './CurrentConditions.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
 	import Footer from './Footer.svelte';
+	import { captureAndShare } from '$lib/share';
 	import { onMount } from 'svelte';
 
 	let pullStartY = $state(0);
@@ -57,6 +58,12 @@
 		}
 		pullDelta = 0;
 		isPulling = false;
+	}
+
+	function handleShare(el: HTMLElement) {
+		if ($weatherState.kind !== 'success') return;
+		const data = $weatherState.data;
+		captureAndShare(el, data.locationName, formatDate(data.timestamp));
 	}
 
 	onMount(() => {
@@ -116,10 +123,10 @@
 				ontouchmove={handleTouchMove}
 				ontouchend={handleTouchEnd}
 			>
-				<HeroCard {data} metricPrimary={$metricPrimary} {loc} onToggleUnits={toggleUnits} />
+				<HeroCard {data} metricPrimary={$metricPrimary} {loc} onToggleUnits={toggleUnits} onShare={handleShare} />
 
 				{#if data.hourlyForecast.length > 0}
-					<CollapsibleSection title={$_('section_hourly_forecast')} expanded={true}>
+					<CollapsibleSection title={$_('section_hourly_forecast')} expanded={true} onShare={handleShare}>
 						<HourlyForecast
 							forecasts={data.hourlyForecast}
 							metricPrimary={$metricPrimary}
@@ -132,7 +139,7 @@
 				{/if}
 
 				{#if data.dailyForecast.length > 0}
-					<CollapsibleSection title={$_('section_this_week')}>
+					<CollapsibleSection title={$_('section_this_week')} onShare={handleShare}>
 						<DailyForecast
 							forecasts={data.dailyForecast}
 							metricPrimary={$metricPrimary}
@@ -143,7 +150,7 @@
 					</CollapsibleSection>
 				{/if}
 
-				<CollapsibleSection title={$_('section_current_conditions')}>
+				<CollapsibleSection title={$_('section_current_conditions')} onShare={handleShare}>
 					<CurrentConditions {data} metricPrimary={$metricPrimary} {loc} onToggleUnits={toggleUnits} />
 				</CollapsibleSection>
 
