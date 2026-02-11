@@ -18,6 +18,7 @@
 	let pullDelta = $state(0);
 	let isPulling = $state(false);
 	let scrollContainer = $state<HTMLElement | null>(null);
+	let headerEl = $state<HTMLElement | null>(null);
 
 	function loc(s: string): string {
 		return localizeDigits(s, SUPPORTED_LOCALES[$localeIndex]);
@@ -61,9 +62,8 @@
 	}
 
 	function handleShare(el: HTMLElement) {
-		if ($weatherState.kind !== 'success') return;
-		const data = $weatherState.data;
-		captureAndShare(el, data.locationName, formatDate(data.timestamp));
+		if (!headerEl) return;
+		captureAndShare(headerEl, el);
 	}
 
 	onMount(() => {
@@ -106,10 +106,12 @@
 		{/if}
 
 		<div class="content-wrapper">
-			<!-- Fixed header -->
+			<!-- Fixed header (location + date captured for share screenshots) -->
 			<div class="header">
-				<h1 class="location-name">{data.locationName}</h1>
-				<p class="date">{formatDate(data.timestamp)}</p>
+				<div bind:this={headerEl}>
+					<h1 class="location-name">{data.locationName}</h1>
+					<p class="date">{formatDate(data.timestamp)}</p>
+				</div>
 				<p class="updated">{$_('updated_time', { values: { time: loc(formatTime(data.timestamp)) } })}</p>
 			</div>
 
