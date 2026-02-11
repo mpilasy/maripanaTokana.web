@@ -8,14 +8,11 @@ import {
 } from './location';
 
 export type WeatherState =
-	| { kind: 'permission' }
 	| { kind: 'loading' }
 	| { kind: 'success'; data: WeatherData }
 	| { kind: 'error'; message: string };
 
-// If we have a cached location, the user granted permission before — skip permission screen
-const hasCache = typeof localStorage !== 'undefined' && !!localStorage.getItem('cached_location');
-export const weatherState = writable<WeatherState>(hasCache ? { kind: 'loading' } : { kind: 'permission' });
+export const weatherState = writable<WeatherState>({ kind: 'loading' });
 export const isRefreshing = writable<boolean>(false);
 
 const STALE_MS = 30 * 60 * 1000; // 30 minutes

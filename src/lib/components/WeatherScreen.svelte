@@ -4,7 +4,6 @@
 	import { metricPrimary, fontIndex, localeIndex, toggleUnits, cycleFont, cycleLanguage } from '$lib/stores/preferences';
 	import { SUPPORTED_LOCALES, localizeDigits } from '$lib/i18n/index';
 	import { fontPairings } from '$lib/fonts';
-	import PermissionScreen from './PermissionScreen.svelte';
 	import HeroCard from './HeroCard.svelte';
 	import HourlyForecast from './HourlyForecast.svelte';
 	import DailyForecast from './DailyForecast.svelte';
@@ -67,23 +66,7 @@
 	}
 
 	onMount(() => {
-		// If store started in 'loading' (has cached location), fetch immediately
-		if ($weatherState.kind === 'loading') {
-			doFetchWeather();
-			return;
-		}
-		// Otherwise check if permission was already granted
-		if (navigator.permissions?.query) {
-			navigator.permissions.query({ name: 'geolocation' })
-				.then((result) => {
-					if (result.state === 'granted') {
-						doFetchWeather();
-					}
-				})
-				.catch(() => {
-					// permissions.query() throws in some embedded browsers — ignore
-				});
-		}
+		doFetchWeather();
 	});
 </script>
 
@@ -91,10 +74,7 @@
 	<!-- Blue Marble background -->
 	<div class="bg-marble"></div>
 
-	{#if $weatherState.kind === 'permission'}
-		<PermissionScreen onGranted={doFetchWeather} />
-
-	{:else if $weatherState.kind === 'loading'}
+	{#if $weatherState.kind === 'loading'}
 		<div class="center">
 			<div class="spinner"></div>
 		</div>
