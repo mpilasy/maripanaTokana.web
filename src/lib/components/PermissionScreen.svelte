@@ -120,7 +120,12 @@
 	{/if}
 
 	{#if geoAvailable}
-		<button onclick={requestPermission}>{$_('grant_permission')}</button>
+		<button onclick={requestPermission}>
+			{$_('grant_permission')}
+			{#if showSecondary && browserStrings}
+				<span class="btn-secondary">{browserStrings.grant_permission}</span>
+			{/if}
+		</button>
 	{/if}
 
 	<button class="copy-link-btn" class:prominent={geoError != null || !geoAvailable} onclick={copyLink}>
@@ -128,9 +133,17 @@
 			{$_('link_copied')}
 		{:else}
 			{$_('copy_link')}
+			{#if showSecondary && browserStrings}
+				<span class="btn-secondary">{browserStrings.copy_link}</span>
+			{/if}
 		{/if}
 	</button>
-	<p class="copy-hint">{$_('copy_link_hint')}</p>
+	<p class="copy-hint">
+		{$_('copy_link_hint')}
+		{#if showSecondary && browserStrings}
+			<span class="hint-secondary">{browserStrings.copy_link_hint}</span>
+		{/if}
+	</p>
 </div>
 
 <style>
@@ -191,6 +204,20 @@
 
 	button:hover {
 		background: rgba(255,255,255,0.25);
+	}
+
+	.btn-secondary {
+		display: block;
+		font-size: 11px;
+		opacity: 0.45;
+		margin-top: 4px;
+		font-weight: 400;
+	}
+
+	.hint-secondary {
+		display: block;
+		opacity: 0.7;
+		margin-top: 2px;
 	}
 
 	.geo-error {
