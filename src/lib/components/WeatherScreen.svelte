@@ -67,7 +67,12 @@
 	}
 
 	onMount(() => {
-		// Check if geolocation is available and permission was already granted
+		// If store started in 'loading' (has cached location), fetch immediately
+		if ($weatherState.kind === 'loading') {
+			doFetchWeather();
+			return;
+		}
+		// Otherwise check if permission was already granted
 		if (navigator.permissions?.query) {
 			navigator.permissions.query({ name: 'geolocation' })
 				.then((result) => {
