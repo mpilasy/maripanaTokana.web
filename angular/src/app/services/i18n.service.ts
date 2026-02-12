@@ -24,7 +24,7 @@ export class I18nService {
 		this._translations.set(allTranslations[tag] ?? mg);
 	}
 
-	t(key: string, params?: Record<string, string>): any {
+	t(key: string, params?: Record<string, string>): string {
 		let val = this._translations()[key];
 		if (val == null) return key;
 		if (typeof val === 'string' && params) {
@@ -32,7 +32,12 @@ export class I18nService {
 				val = val.replace(`{${k}}`, v);
 			}
 		}
-		return val;
+		return typeof val === 'string' ? val : key;
+	}
+
+	tArray(key: string): string[] {
+		const val = this._translations()[key];
+		return Array.isArray(val) ? val : [];
 	}
 
 	loc(s: string, locale: SupportedLocale): string {

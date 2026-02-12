@@ -18,8 +18,9 @@ import { DualUnitTextComponent } from './dual-unit-text.component';
 			}
 		</div>
 	`,
+	host: { style: 'flex: 1' },
 	styles: `
-		.detail-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+		.detail-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 		.title { font-size: 14px; color: rgba(255,255,255,0.7); }
 		.value { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
 		.subtitle { font-size: 12px; color: rgba(255,255,255,0.6); }

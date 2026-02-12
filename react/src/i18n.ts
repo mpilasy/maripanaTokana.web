@@ -37,6 +37,7 @@ i18n.use(initReactI18next).init({
 	lng: initialLocale,
 	fallbackLng: 'mg',
 	interpolation: { escapeValue: false },
+	returnObjects: true,
 });
 
 export default i18n;

@@ -86,8 +86,8 @@ export class CurrentConditionsComponent {
 	});
 
 	uvLabel = computed(() => {
-		const labels = this.i18n.t('uv_labels') as string[];
-		if (!Array.isArray(labels)) return '';
+		const labels = this.i18n.tArray('uv_labels');
+		if (labels.length === 0) return '';
 		const uv = this.data().uvIndex;
 		if (uv < 3) return labels[0];
 		if (uv < 6) return labels[1];
@@ -102,8 +102,8 @@ export class CurrentConditionsComponent {
 	}
 
 	private getCardinalDirection(deg: number): string {
-		const dirs = this.i18n.t('cardinal_directions') as string[];
-		if (!Array.isArray(dirs)) return '';
+		const dirs = this.i18n.tArray('cardinal_directions');
+		if (dirs.length === 0) return '';
 		const idx = ((deg % 360 + 360) % 360 * 16 / 360) % 16;
 		return dirs[Math.round(idx)] ?? '';
 	}
