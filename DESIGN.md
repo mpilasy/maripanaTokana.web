@@ -669,23 +669,74 @@ Share buttons appear on the HeroCard and on each CollapsibleSection header (only
 
 ## 13. Deployment
 
-### Docker (Production)
+### Docker (Production) — Multi-App
+
+The Docker setup builds and serves three separate applications from a single container:
 
 ```dockerfile
-# Stage 1: Build
+# Stage 1: Build all apps
 FROM node:22-alpine
-COPY . .
-RUN npm ci && npm run build
+WORKDIR /app
 
-# Stage 2: Serve
+# Install dependencies and build Svelte app (root)
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Install and build React app (/re path)
+COPY react/package.json react/package-lock.json ./react/
+WORKDIR /app/react
+RUN npm ci
+RUN npm run build
+
+# Install and build Angular app (/an path)
+COPY angular/package.json angular/package-lock.json ./angular/
+WORKDIR /app/angular
+RUN npm ci
+RUN npm run build
+
+# Stage 2: Serve all apps
 FROM caddy:alpine
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /app/build /srv
+COPY --from=build /app/build /srv/svelte          # Svelte at /
+COPY --from=build /app/react/dist /srv/re         # React at /re/*
+COPY --from=build /app/angular/dist /srv/an       # Angular at /an/*
+EXPOSE 80
 ```
 
-The Caddyfile configures:
-- SPA routing: `try_files {path} /index.html` (all paths serve index.html)
-- Service worker headers: `no-cache, no-store, must-revalidate` on `/service-worker.js` (ensures the browser always checks for updates)
+### Routing Configuration
+
+The Caddyfile implements path-based routing with optimization:
+
+**Compression**: Gzip enabled for all text assets (JS, CSS, fonts)
+
+**Routing**:
+- `/` → Svelte app (SPA fallback: `try_files {path} /index.html`)
+- `/re/*` → React app (SPA fallback: `try_files {path} /index.html`, base path `/re/`)
+- `/an/*` → Angular app (SPA fallback: `try_files {path} /index.html`, base href `/an/`)
+
+**Caching**:
+- **Versioned assets** (regex: `.*\.[a-f0-9]{8}\.(js|css|woff2|ttf)$`): `max-age=31536000, immutable` (1 year)
+  - Build tools (Vite, Angular) hash filenames; unchanged assets stay cached
+- **HTML files**: `no-cache, public, must-revalidate` (browser always checks, serves cached if unchanged)
+- **Service worker**: `no-cache, no-store, must-revalidate` (always fetch fresh)
+
+**Result**: On repeat visits, browser only downloads HTML (metadata check), reuses all cached JS/CSS/fonts if unchanged.
+
+### Build Optimizations
+
+**React**:
+- `minify: 'terser'` — aggressive minification
+- `sourcemap: false` — no development maps in production
+- `cssCodeSplit: false` — CSS consolidated with JS
+- Single bundle via `manualChunks: () => 'app'`
+
+**Angular**:
+- `aot: true` — ahead-of-time compilation (default in v19)
+- `buildOptimizer: true` — remove unused code
+- `sourceMap: false` — no development maps
+- `vendorChunk: false` — smaller vendor bundle
 
 ### Docker Compose
 
@@ -694,7 +745,7 @@ docker compose up -d --build          # Default port 3080
 PORT=8080 docker compose up -d --build  # Custom port
 ```
 
-The container runs Caddy on port 80, mapped to the host port.
+The container runs Caddy on port 80, mapped to the host port. All three apps are served from a single Docker instance for simplified deployment and reverse-proxy integration.
 
 ---
 
