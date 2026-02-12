@@ -70,7 +70,8 @@ SvelteKit is to Svelte what Next.js is to React — a full application framework
 | `src/routes/+page.svelte` | `app/page.tsx` | Page component for a URL route |
 | `src/routes/+layout.svelte` | `app/layout.tsx` | Shared layout wrapping all pages |
 | `adapter-static` | `output: 'export'` | Generates static HTML (no server needed) |
-| `$lib/` alias | `@/lib/` | Import alias for `svelte/src/lib/` directory |
+| `$lib/` alias | `@/lib/` | Import alias for `svelte/src/lib/` directory (Svelte-specific code) |
+| `$shared/` alias | — | Import alias for `shared/` directory (framework-agnostic code) |
 | `src/service-worker.ts` | Custom setup | Built-in service worker support with build manifest |
 
 ---
@@ -388,9 +389,9 @@ count.update(n => n + 1);
 // This automatically re-renders when count changes.
 ```
 
-### Three Store Files
+### Svelte Store Files
 
-#### `weather.ts` — Weather State Machine
+#### `stores/weather.ts` — Weather State Machine
 
 ```typescript
 type WeatherState =
@@ -407,7 +408,7 @@ This means the user sees data almost instantly on repeat visits, even before the
 
 `refreshIfStale()` checks if the last fetch was more than 30 minutes ago and triggers a new fetch. It's called on the `visibilitychange` browser event (when the user switches back to the app's tab).
 
-#### `preferences.ts` — Persisted User Preferences
+#### `stores/preferences.ts` — Persisted User Preferences
 
 Three values, all persisted to `localStorage`:
 
@@ -419,9 +420,9 @@ Three values, all persisted to `localStorage`:
 
 The `persistedWritable<T>(key, default)` helper creates a Svelte writable store that reads its initial value from `localStorage` and writes back on every change.
 
-#### `location.ts` — Geolocation Utilities
+### Shared: `shared/stores/location.ts` — Geolocation Utilities
 
-Not a store, but a module of utility functions:
+Framework-agnostic utility functions (not a Svelte store):
 
 - `getPosition()`: Wraps `navigator.geolocation.getCurrentPosition()` in a Promise with 15-second timeout.
 - `reverseGeocode(lat, lon)`: Calls the Nominatim API to convert coordinates to a human-readable place name. Falls back through `city → town → village → county → state → "lat, lon"`.
@@ -572,7 +573,7 @@ When Arabic is selected:
 
 ## 10. Font System
 
-22 font pairings are defined in `fonts.ts`. Each pairing specifies:
+22 font pairings are defined in `shared/fonts.ts`. Each pairing specifies:
 
 ```typescript
 interface FontPairing {
@@ -629,7 +630,7 @@ If the app shell request fails and there's no cache hit, the service worker trie
 
 ## 12. Screenshot Sharing
 
-`share.ts` implements branded screenshot capture:
+`shared/share.ts` implements branded screenshot capture:
 
 1. **Capture**: Uses `html2canvas` (dynamically imported to avoid SSR issues) to render the header element and content element to separate canvases at 2x resolution.
 
@@ -779,7 +780,7 @@ Temperature, Pressure, WindSpeed, and Precipitation are immutable classes with p
 | Category | Files | Lines |
 |----------|-------|-------|
 | Components | 9 | ~1,280 |
-| Stores | 3 | ~180 |
+| Stores | 2 | ~120 |
 | API | 4 | ~217 |
 | Domain | 5 | ~177 |
 | i18n | 9 | ~535 |
