@@ -52,102 +52,87 @@
 </script>
 
 <div class="conditions-grid">
-	<div class="row">
+	<DetailCard
+		title={"\u2193 " + $_('detail_min_temp')}
+		value={loc(minDual[0])}
+		secondaryValue={loc(minDual[1])}
+		{onToggleUnits}
+	/>
+	<DetailCard
+		title={"\u2191 " + $_('detail_max_temp')}
+		value={loc(maxDual[0])}
+		secondaryValue={loc(maxDual[1])}
+		{onToggleUnits}
+	/>
+
+	<DetailCard
+		title={$_('detail_wind')}
+		value={loc(windDual[0])}
+		secondaryValue={loc(windDual[1])}
+		subtitle={loc(`${getCardinalDirection(data.windDeg)} (${data.windDeg}°)`)}
+		{onToggleUnits}
+	/>
+	{#if gustDual}
 		<DetailCard
-			title={"\u2193 " + $_('detail_min_temp')}
-			value={loc(minDual[0])}
-			secondaryValue={loc(minDual[1])}
+			title={$_('detail_wind_gust')}
+			value={loc(gustDual[0])}
+			secondaryValue={loc(gustDual[1])}
 			{onToggleUnits}
 		/>
-		<DetailCard
-			title={"\u2191 " + $_('detail_max_temp')}
-			value={loc(maxDual[0])}
-			secondaryValue={loc(maxDual[1])}
-			{onToggleUnits}
-		/>
+	{:else}
+		<div class="detail-card-placeholder"></div>
+	{/if}
+
+	<DetailCard
+		title={$_('detail_pressure')}
+		value={loc(pressDual[0])}
+		secondaryValue={loc(pressDual[1])}
+		{onToggleUnits}
+	/>
+	<!-- Humidity + Dew point combined card -->
+	<div class="detail-card humidity-card">
+		<span class="card-title">{$_('detail_humidity')}</span>
+		<span class="card-value">{loc(`${data.humidity}%`)}</span>
+		<span class="dew-label">{$_('detail_dewpoint')}</span>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<span class="dew-values" onclick={onToggleUnits}>
+			<span class="dew-primary">{loc(dewDual[0])}</span>
+			<span class="dew-secondary">{loc(dewDual[1])}</span>
+		</span>
 	</div>
 
-	<div class="row">
-		<DetailCard
-			title={$_('detail_wind')}
-			value={loc(windDual[0])}
-			secondaryValue={loc(windDual[1])}
-			subtitle={loc(`${getCardinalDirection(data.windDeg)} (${data.windDeg}°)`)}
-			{onToggleUnits}
-		/>
-		{#if gustDual}
-			<DetailCard
-				title={$_('detail_wind_gust')}
-				value={loc(gustDual[0])}
-				secondaryValue={loc(gustDual[1])}
-				{onToggleUnits}
-			/>
-		{:else}
-			<div class="detail-card-placeholder"></div>
-		{/if}
-	</div>
+	<DetailCard
+		title={$_('detail_uv_index')}
+		value={loc(data.uvIndex.toFixed(1))}
+		subtitle={getUvLabel(data.uvIndex)}
+	/>
+	<DetailCard
+		title={$_('detail_visibility')}
+		value={loc(visDual[0])}
+		secondaryValue={loc(visDual[1])}
+		{onToggleUnits}
+	/>
 
-	<div class="row">
-		<DetailCard
-			title={$_('detail_pressure')}
-			value={loc(pressDual[0])}
-			secondaryValue={loc(pressDual[1])}
-			{onToggleUnits}
-		/>
-		<!-- Humidity + Dew point combined card -->
-		<div class="detail-card humidity-card">
-			<span class="card-title">{$_('detail_humidity')}</span>
-			<span class="card-value">{loc(`${data.humidity}%`)}</span>
-			<span class="dew-label">{$_('detail_dewpoint')}</span>
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<span class="dew-values" onclick={onToggleUnits}>
-				<span class="dew-primary">{loc(dewDual[0])}</span>
-				<span class="dew-secondary">{loc(dewDual[1])}</span>
-			</span>
-		</div>
-	</div>
-
-	<div class="row">
-		<DetailCard
-			title={$_('detail_uv_index')}
-			value={loc(data.uvIndex.toFixed(1))}
-			subtitle={getUvLabel(data.uvIndex)}
-		/>
-		<DetailCard
-			title={$_('detail_visibility')}
-			value={loc(visDual[0])}
-			secondaryValue={loc(visDual[1])}
-			{onToggleUnits}
-		/>
-	</div>
-
-	<div class="row">
-		<DetailCard
-			title={$_('detail_sunrise')}
-			value={loc(formatTime(data.sunrise))}
-		/>
-		<DetailCard
-			title={$_('detail_sunset')}
-			value={loc(formatTime(data.sunset))}
-		/>
-	</div>
+	<DetailCard
+		title={$_('detail_sunrise')}
+		value={loc(formatTime(data.sunrise))}
+	/>
+	<DetailCard
+		title={$_('detail_sunset')}
+		value={loc(formatTime(data.sunset))}
+	/>
 </div>
 
 <style>
 	.conditions-grid {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
-
-	.row {
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-auto-rows: 1fr;
 		gap: 16px;
 	}
 
 	.detail-card-placeholder {
-		flex: 1;
 	}
 
 	.humidity-card {

@@ -52,84 +52,74 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 
 	return (
 		<div className="conditions-grid">
-			<div className="conditions-row">
+			<DetailCard
+				title={"\u2193 " + t('detail_min_temp')}
+				value={loc(minDual[0])}
+				secondaryValue={loc(minDual[1])}
+				onToggleUnits={onToggleUnits}
+			/>
+			<DetailCard
+				title={"\u2191 " + t('detail_max_temp')}
+				value={loc(maxDual[0])}
+				secondaryValue={loc(maxDual[1])}
+				onToggleUnits={onToggleUnits}
+			/>
+
+			<DetailCard
+				title={t('detail_wind')}
+				value={loc(windDual[0])}
+				secondaryValue={loc(windDual[1])}
+				subtitle={loc(`${getCardinalDirection(data.windDeg, t)} (${data.windDeg}°)`)}
+				onToggleUnits={onToggleUnits}
+			/>
+			{gustDual ? (
 				<DetailCard
-					title={"\u2193 " + t('detail_min_temp')}
-					value={loc(minDual[0])}
-					secondaryValue={loc(minDual[1])}
+					title={t('detail_wind_gust')}
+					value={loc(gustDual[0])}
+					secondaryValue={loc(gustDual[1])}
 					onToggleUnits={onToggleUnits}
 				/>
-				<DetailCard
-					title={"\u2191 " + t('detail_max_temp')}
-					value={loc(maxDual[0])}
-					secondaryValue={loc(maxDual[1])}
-					onToggleUnits={onToggleUnits}
-				/>
+			) : (
+				<div className="detail-card-placeholder" />
+			)}
+
+			<DetailCard
+				title={t('detail_pressure')}
+				value={loc(pressDual[0])}
+				secondaryValue={loc(pressDual[1])}
+				onToggleUnits={onToggleUnits}
+			/>
+			{/* Humidity + Dew point combined card */}
+			<div className="detail-card humidity-card">
+				<span className="detail-card-title">{t('detail_humidity')}</span>
+				<span className="detail-card-value">{loc(`${data.humidity}%`)}</span>
+				<span className="dew-label">{t('detail_dewpoint')}</span>
+				<span className="dew-values" onClick={onToggleUnits}>
+					<span className="dew-primary">{loc(dewDual[0])}</span>
+					<span className="dew-secondary">{loc(dewDual[1])}</span>
+				</span>
 			</div>
 
-			<div className="conditions-row">
-				<DetailCard
-					title={t('detail_wind')}
-					value={loc(windDual[0])}
-					secondaryValue={loc(windDual[1])}
-					subtitle={loc(`${getCardinalDirection(data.windDeg, t)} (${data.windDeg}°)`)}
-					onToggleUnits={onToggleUnits}
-				/>
-				{gustDual ? (
-					<DetailCard
-						title={t('detail_wind_gust')}
-						value={loc(gustDual[0])}
-						secondaryValue={loc(gustDual[1])}
-						onToggleUnits={onToggleUnits}
-					/>
-				) : (
-					<div className="detail-card-placeholder" />
-				)}
-			</div>
+			<DetailCard
+				title={t('detail_uv_index')}
+				value={loc(data.uvIndex.toFixed(1))}
+				subtitle={getUvLabel(data.uvIndex, t)}
+			/>
+			<DetailCard
+				title={t('detail_visibility')}
+				value={loc(visDual[0])}
+				secondaryValue={loc(visDual[1])}
+				onToggleUnits={onToggleUnits}
+			/>
 
-			<div className="conditions-row">
-				<DetailCard
-					title={t('detail_pressure')}
-					value={loc(pressDual[0])}
-					secondaryValue={loc(pressDual[1])}
-					onToggleUnits={onToggleUnits}
-				/>
-				{/* Humidity + Dew point combined card */}
-				<div className="detail-card humidity-card">
-					<span className="detail-card-title">{t('detail_humidity')}</span>
-					<span className="detail-card-value">{loc(`${data.humidity}%`)}</span>
-					<span className="dew-label">{t('detail_dewpoint')}</span>
-					<span className="dew-values" onClick={onToggleUnits}>
-						<span className="dew-primary">{loc(dewDual[0])}</span>
-						<span className="dew-secondary">{loc(dewDual[1])}</span>
-					</span>
-				</div>
-			</div>
-
-			<div className="conditions-row">
-				<DetailCard
-					title={t('detail_uv_index')}
-					value={loc(data.uvIndex.toFixed(1))}
-					subtitle={getUvLabel(data.uvIndex, t)}
-				/>
-				<DetailCard
-					title={t('detail_visibility')}
-					value={loc(visDual[0])}
-					secondaryValue={loc(visDual[1])}
-					onToggleUnits={onToggleUnits}
-				/>
-			</div>
-
-			<div className="conditions-row">
-				<DetailCard
-					title={t('detail_sunrise')}
-					value={loc(formatTime(data.sunrise))}
-				/>
-				<DetailCard
-					title={t('detail_sunset')}
-					value={loc(formatTime(data.sunset))}
-				/>
-			</div>
+			<DetailCard
+				title={t('detail_sunrise')}
+				value={loc(formatTime(data.sunrise))}
+			/>
+			<DetailCard
+				title={t('detail_sunset')}
+				value={loc(formatTime(data.sunset))}
+			/>
 		</div>
 	);
 }

@@ -9,45 +9,38 @@ import { DetailCardComponent } from './detail-card.component';
 	imports: [DetailCardComponent],
 	template: `
 		<div class="conditions-grid">
-			<div class="row">
-				<app-detail-card [title]="'↓ ' + i18n.t('detail_min_temp')" [value]="minDual()[0]" [secondaryValue]="minDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
-				<app-detail-card [title]="'↑ ' + i18n.t('detail_max_temp')" [value]="maxDual()[0]" [secondaryValue]="maxDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
+			<app-detail-card [title]="'↓ ' + i18n.t('detail_min_temp')" [value]="minDual()[0]" [secondaryValue]="minDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
+			<app-detail-card [title]="'↑ ' + i18n.t('detail_max_temp')" [value]="maxDual()[0]" [secondaryValue]="maxDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
+
+			<app-detail-card [title]="i18n.t('detail_wind')" [value]="windDual()[0]" [secondaryValue]="windDual()[1]" [subtitle]="windSubtitle()" (onToggleUnits)="onToggleUnits.emit()" />
+			@if (gustDual()) {
+				<app-detail-card [title]="i18n.t('detail_wind_gust')" [value]="gustDual()![0]" [secondaryValue]="gustDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
+			} @else {
+				<div class="placeholder"></div>
+			}
+
+			<app-detail-card [title]="i18n.t('detail_pressure')" [value]="pressDual()[0]" [secondaryValue]="pressDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
+			<div class="humidity-card">
+				<span class="card-title">{{ i18n.t('detail_humidity') }}</span>
+				<span class="card-value">{{ loc()(data().humidity + '%') }}</span>
+				<span class="dew-label">{{ i18n.t('detail_dewpoint') }}</span>
+				<span class="dew-values" (click)="onToggleUnits.emit()">
+					<span class="dew-primary">{{ dewDual()[0] }}</span>
+					<span class="dew-secondary">{{ dewDual()[1] }}</span>
+				</span>
 			</div>
-			<div class="row">
-				<app-detail-card [title]="i18n.t('detail_wind')" [value]="windDual()[0]" [secondaryValue]="windDual()[1]" [subtitle]="windSubtitle()" (onToggleUnits)="onToggleUnits.emit()" />
-				@if (gustDual()) {
-					<app-detail-card [title]="i18n.t('detail_wind_gust')" [value]="gustDual()![0]" [secondaryValue]="gustDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
-				} @else {
-					<div class="placeholder"></div>
-				}
-			</div>
-			<div class="row">
-				<app-detail-card [title]="i18n.t('detail_pressure')" [value]="pressDual()[0]" [secondaryValue]="pressDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
-				<div class="humidity-card">
-					<span class="card-title">{{ i18n.t('detail_humidity') }}</span>
-					<span class="card-value">{{ loc()(data().humidity + '%') }}</span>
-					<span class="dew-label">{{ i18n.t('detail_dewpoint') }}</span>
-					<span class="dew-values" (click)="onToggleUnits.emit()">
-						<span class="dew-primary">{{ dewDual()[0] }}</span>
-						<span class="dew-secondary">{{ dewDual()[1] }}</span>
-					</span>
-				</div>
-			</div>
-			<div class="row">
-				<app-detail-card [title]="i18n.t('detail_uv_index')" [value]="loc()(data().uvIndex.toFixed(1))" [subtitle]="uvLabel()" />
-				<app-detail-card [title]="i18n.t('detail_visibility')" [value]="visDual()[0]" [secondaryValue]="visDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
-			</div>
-			<div class="row">
-				<app-detail-card [title]="i18n.t('detail_sunrise')" [value]="loc()(formatTime(data().sunrise))" />
-				<app-detail-card [title]="i18n.t('detail_sunset')" [value]="loc()(formatTime(data().sunset))" />
-			</div>
+
+			<app-detail-card [title]="i18n.t('detail_uv_index')" [value]="loc()(data().uvIndex.toFixed(1))" [subtitle]="uvLabel()" />
+			<app-detail-card [title]="i18n.t('detail_visibility')" [value]="visDual()[0]" [secondaryValue]="visDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
+
+			<app-detail-card [title]="i18n.t('detail_sunrise')" [value]="loc()(formatTime(data().sunrise))" />
+			<app-detail-card [title]="i18n.t('detail_sunset')" [value]="loc()(formatTime(data().sunset))" />
 		</div>
 	`,
 	styles: `
-		.conditions-grid { display: flex; flex-direction: column; gap: 16px; }
-		.row { display: flex; gap: 16px; }
-		.placeholder { flex: 1; }
-		.humidity-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+		.conditions-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 16px; }
+		.placeholder { }
+		.humidity-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 		.card-title { font-size: 14px; color: rgba(255,255,255,0.7); }
 		.card-value { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
 		.dew-label { font-size: 12px; color: rgba(255,255,255,0.5); }

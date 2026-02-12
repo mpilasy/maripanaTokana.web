@@ -379,18 +379,13 @@
 
 /* ===== CurrentConditions ===== */
 .conditions-grid {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-}
-
-.conditions-row {
-	display: flex;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-auto-rows: 1fr;
 	gap: 16px;
 }
 
 .detail-card-placeholder {
-	flex: 1;
 }
 
 /* ===== DetailCard ===== */

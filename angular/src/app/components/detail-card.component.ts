@@ -18,7 +18,7 @@ import { DualUnitTextComponent } from './dual-unit-text.component';
 			}
 		</div>
 	`,
-	host: { style: 'flex: 1; display: flex' },
+	host: { style: 'display: flex' },
 	styles: `
 		.detail-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 		.title { font-size: 14px; color: rgba(255,255,255,0.7); }
