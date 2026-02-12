@@ -18,6 +18,10 @@ export default defineConfig({
 		},
 	},
 	build: {
+		minify: 'terser',
+		sourcemap: false,
+		cssCodeSplit: false,
+		emptyOutDir: true,
 		rollupOptions: {
 			output: {
 				manualChunks: () => 'app',
