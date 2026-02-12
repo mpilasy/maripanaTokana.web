@@ -1,6 +1,44 @@
 :80 {
-	root * /srv
-	try_files {path} /index.html
-	file_server
-	header /service-worker.js Cache-Control "no-cache, no-store, must-revalidate"
+	# Svelte app (root)
+	@svelte {
+		path / /index.html /manifest.json /service-worker.js
+		path /*.js
+		path /*.css
+		path /*.png
+		path /*.jpg
+		path /*.jpeg
+		path /*.gif
+		path /*.svg
+		path /*.woff
+		path /*.woff2
+		path /*.ttf
+	}
+	handle @svelte {
+		root * /srv/svelte
+		try_files {path} /index.html
+		file_server
+		header /service-worker.js Cache-Control "no-cache, no-store, must-revalidate"
+	}
+
+	# React app (/re/*)
+	@react {
+		path /re /re/*
+	}
+	handle @react {
+		root * /srv/re
+		rewrite * {path}
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Angular app (/an/*)
+	@angular {
+		path /an /an/*
+	}
+	handle @angular {
+		root * /srv/an
+		rewrite * {path}
+		try_files {path} /index.html
+		file_server
+	}
 }
