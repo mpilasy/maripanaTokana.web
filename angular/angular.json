@@ -18,7 +18,6 @@
 						"assets": [{ "glob": "**/*", "input": "public" }],
 						"styles": ["src/styles.css"],
 						"scripts": [],
-						"vendorChunk": false,
 						"sourceMap": false,
 						"optimization": true
 					},
