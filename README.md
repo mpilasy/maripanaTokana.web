@@ -50,6 +50,7 @@ This is the web port of the [Android app](../maripanaTokana/), built with Svelte
 ## Build & Run
 
 ```bash
+cd svelte
 npm install          # Install dependencies
 npm run dev          # Dev server at localhost:5173
 npm run build        # Production build to build/ (includes CSS inlining)
@@ -100,45 +101,55 @@ docker-compose.yml  # Container config (port 3080)
 Single-page static SvelteKit app. No server-side logic.
 
 ```
-src/
-├── lib/
-│   ├── api/
-│   │   ├── openMeteo.ts          # fetch client
-│   │   ├── openMeteoTypes.ts     # API response interfaces
-│   │   ├── openMeteoMapper.ts    # response → domain mapping
-│   │   └── wmoWeatherCode.ts     # WMO code → emoji + i18n key
-│   ├── domain/
-│   │   ├── temperature.ts        # Temperature class with displayDual()
-│   │   ├── pressure.ts           # Pressure class with displayDual()
-│   │   ├── windSpeed.ts          # WindSpeed class with displayDual()
-│   │   ├── precipitation.ts      # Precipitation class with displayDual()
-│   │   └── weatherData.ts        # WeatherData, HourlyForecast, DailyForecast interfaces
-│   ├── i18n/
-│   │   ├── index.ts              # svelte-i18n setup + localizeDigits()
-│   │   └── locales/              # 8 locale JSON files
-│   │       ├── en.json  ├── mg.json  ├── ar.json  ├── es.json
-│   │       ├── fr.json  ├── hi.json  ├── ne.json  └── zh.json
-│   ├── stores/
-│   │   ├── preferences.ts        # Persisted stores (metricPrimary, fontIndex, localeIndex)
-│   │   ├── weather.ts            # Weather state machine + fetch logic
-│   │   └── location.ts           # Geolocation + Nominatim reverse geocoding
-│   ├── fonts.ts                  # 22 FontPairing definitions + Google Fonts URLs
-│   ├── share.ts                  # html2canvas capture + Web Share API / download fallback
-│   └── components/
-│       ├── WeatherScreen.svelte      # Root container (state switch, pull-to-refresh, dual-language error)
-│       ├── HeroCard.svelte           # Main weather card (emoji, temp, feels-like, precip, share btn)
-│       ├── HourlyForecast.svelte     # Horizontal scrolling hourly row (24h)
-│       ├── DailyForecast.svelte      # 10-day vertical list
-│       ├── CurrentConditions.svelte  # Detail cards grid (5 rows × 2 columns)
-│       ├── DetailCard.svelte         # Reusable detail card
-│       ├── DualUnitText.svelte       # Primary + secondary unit display (clickable)
-│       ├── CollapsibleSection.svelte # Animated expand/collapse with slide transition + share btn
-│       └── Footer.svelte             # Font cycle / credits / language cycle
-├── routes/
-│   ├── +page.svelte     # Single page — mounts WeatherScreen
-│   └── +layout.svelte   # Root layout (font loading, RTL, i18n init, auto-refresh)
-├── service-worker.ts    # PWA caching (NetworkFirst for app + API, CacheFirst for fonts)
-└── app.html             # Shell HTML with manifest + meta tags + page title
+svelte/
+├── src/
+│   ├── lib/
+│   │   ├── api/
+│   │   │   ├── openMeteo.ts          # fetch client
+│   │   │   ├── openMeteoTypes.ts     # API response interfaces
+│   │   │   ├── openMeteoMapper.ts    # response → domain mapping
+│   │   │   └── wmoWeatherCode.ts     # WMO code → emoji + i18n key
+│   │   ├── domain/
+│   │   │   ├── temperature.ts        # Temperature class with displayDual()
+│   │   │   ├── pressure.ts           # Pressure class with displayDual()
+│   │   │   ├── windSpeed.ts          # WindSpeed class with displayDual()
+│   │   │   ├── precipitation.ts      # Precipitation class with displayDual()
+│   │   │   └── weatherData.ts        # WeatherData, HourlyForecast, DailyForecast interfaces
+│   │   ├── i18n/
+│   │   │   ├── index.ts              # svelte-i18n setup + localizeDigits()
+│   │   │   └── locales/              # 8 locale JSON files
+│   │   │       ├── en.json  ├── mg.json  ├── ar.json  ├── es.json
+│   │   │       ├── fr.json  ├── hi.json  ├── ne.json  └── zh.json
+│   │   ├── stores/
+│   │   │   ├── preferences.ts        # Persisted stores (metricPrimary, fontIndex, localeIndex)
+│   │   │   ├── weather.ts            # Weather state machine + fetch logic
+│   │   │   └── location.ts           # Geolocation + Nominatim reverse geocoding
+│   │   ├── fonts.ts                  # 22 FontPairing definitions + Google Fonts URLs
+│   │   ├── share.ts                  # html2canvas capture + Web Share API / download fallback
+│   │   └── components/
+│   │       ├── WeatherScreen.svelte      # Root container (state switch, pull-to-refresh, dual-language error)
+│   │       ├── HeroCard.svelte           # Main weather card (emoji, temp, feels-like, precip, share btn)
+│   │       ├── HourlyForecast.svelte     # Horizontal scrolling hourly row (24h)
+│   │       ├── DailyForecast.svelte      # 10-day vertical list
+│   │       ├── CurrentConditions.svelte  # Detail cards grid (5 rows × 2 columns)
+│   │       ├── DetailCard.svelte         # Reusable detail card
+│   │       ├── DualUnitText.svelte       # Primary + secondary unit display (clickable)
+│   │       ├── CollapsibleSection.svelte # Animated expand/collapse with slide transition + share btn
+│   │       └── Footer.svelte             # Font cycle / credits / language cycle
+│   ├── routes/
+│   │   ├── +page.svelte     # Single page — mounts WeatherScreen
+│   │   └── +layout.svelte   # Root layout (font loading, RTL, i18n init, auto-refresh)
+│   ├── service-worker.ts    # PWA caching (NetworkFirst for app + API, CacheFirst for fonts)
+│   └── app.html             # Shell HTML with manifest + meta tags + page title
+├── scripts/
+│   └── inline-assets.js     # Post-build: inlines CSS into HTML
+├── static/
+│   ├── manifest.json         # PWA manifest
+│   └── icons/                # PWA icons
+├── svelte.config.js          # SvelteKit config (static adapter)
+├── vite.config.ts            # Vite config (single-chunk bundling)
+├── tsconfig.json
+└── package.json              # Svelte dependencies
 ```
 
 ## Internationalization

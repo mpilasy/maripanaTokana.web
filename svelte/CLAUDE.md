@@ -2,14 +2,15 @@
 
 **Framework:** SvelteKit with Svelte 5 runes (`$state`, `$derived`, `$effect`, `$props`), TypeScript
 **Adapter:** `@sveltejs/adapter-static` (fully static, no server-side logic)
-**i18n:** `svelte-i18n` — reactive `$_()` store, 8 JSON locale files in `lib/i18n/locales/`
+**i18n:** `svelte-i18n` — reactive `$_()` store, 8 JSON locale files in `src/lib/i18n/locales/`
 **Styling:** Plain CSS with custom properties (`--font-display`, `--font-body`, `--font-features`), no CSS framework
 **Build optimization:** `manualChunks` consolidates JS into one bundle; `scripts/inline-assets.js` inlines CSS into HTML
 **Served at:** `/` (root path)
 
 ## Build & Run
 ```bash
-npm install          # Install dependencies (from repo root)
+cd svelte
+npm install          # Install dependencies
 npm run dev          # Dev server at localhost:5173
 npm run build        # Production build to build/ (vite build + CSS inlining)
 npm run preview      # Preview production build
@@ -18,25 +19,30 @@ npm run check        # Type-check with svelte-check
 
 ## Architecture
 ```
-src/
-├── lib/
-│   ├── api/             # Open-Meteo fetch client, types, mapper, WMO codes
-│   ├── domain/          # Value classes: Temperature, Pressure, WindSpeed, Precipitation
-│   ├── i18n/            # svelte-i18n setup + 8 locale JSON files
-│   ├── stores/          # Svelte writable stores (preferences, weather state, location)
-│   ├── fonts.ts         # 22 FontPairing definitions + Google Fonts URLs
-│   ├── share.ts         # html2canvas capture + Web Share API / download fallback
-│   └── components/      # All Svelte components (9 files)
-├── routes/
-│   ├── +page.svelte     # Single page — mounts WeatherScreen
-│   └── +layout.svelte   # Root layout (font loading, RTL, i18n init)
-├── service-worker.ts    # PWA caching (NetworkFirst for app + API, CacheFirst for fonts)
-└── app.html             # Shell HTML with manifest link + page title
-scripts/
-└── inline-assets.js     # Post-build: inlines CSS into index.html
-static/
-├── manifest.json        # PWA manifest
-└── ...                  # Icons, background image
+svelte/
+├── src/
+│   ├── lib/
+│   │   ├── api/             # Open-Meteo fetch client, types, mapper, WMO codes
+│   │   ├── domain/          # Value classes: Temperature, Pressure, WindSpeed, Precipitation
+│   │   ├── i18n/            # svelte-i18n setup + 8 locale JSON files
+│   │   ├── stores/          # Svelte writable stores (preferences, weather state, location)
+│   │   ├── fonts.ts         # 22 FontPairing definitions + Google Fonts URLs
+│   │   ├── share.ts         # html2canvas capture + Web Share API / download fallback
+│   │   └── components/      # All Svelte components (9 files)
+│   ├── routes/
+│   │   ├── +page.svelte     # Single page — mounts WeatherScreen
+│   │   └── +layout.svelte   # Root layout (font loading, RTL, i18n init)
+│   ├── service-worker.ts    # PWA caching (NetworkFirst for app + API, CacheFirst for fonts)
+│   └── app.html             # Shell HTML with manifest link + page title
+├── scripts/
+│   └── inline-assets.js     # Post-build: inlines CSS into index.html
+├── static/
+│   ├── manifest.json        # PWA manifest
+│   └── ...                  # Icons, background image
+├── svelte.config.js         # SvelteKit config (static adapter)
+├── vite.config.ts           # Vite config (single-chunk bundling)
+├── tsconfig.json
+└── package.json             # Svelte dependencies
 ```
 
 ## Component Details

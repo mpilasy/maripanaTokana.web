@@ -10,13 +10,13 @@
 ## Project Layout
 ```
 maripanaTokana.web/
-├── src/                 # Svelte app source (primary implementation)
+├── svelte/             # Svelte app (primary implementation)
 ├── react/              # React app (separate package.json, vite.config.ts)
 ├── angular/            # Angular app (separate package.json, angular.json)
 ├── Dockerfile          # Multi-stage build (all three apps)
 ├── Caddyfile           # Path-based routing + gzip + caching
 ├── docker-compose.yml  # Container configuration
-├── package.json        # Root scripts (build:all, build:react, build:angular)
+├── package.json        # Root scripts (build:all, build:svelte, build:react, build:angular)
 └── CLAUDE.md           # This file
 ```
 
