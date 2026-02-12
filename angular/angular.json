@@ -16,6 +16,7 @@
 						"browser": "src/main.ts",
 						"tsConfig": "tsconfig.app.json",
 						"assets": [{ "glob": "**/*", "input": "public" }],
+						"polyfills": ["zone.js"],
 						"styles": ["src/styles.css"],
 						"scripts": [],
 						"sourceMap": false,
