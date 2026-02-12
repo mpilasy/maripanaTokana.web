@@ -36,5 +36,5 @@ FROM caddy:alpine
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/svelte/build /srv/svelte
 COPY --from=build /app/react/dist /srv/react
-COPY --from=build /app/angular/dist /srv/ng
+COPY --from=build /app/angular/dist/browser /srv/ng
 EXPOSE 80
