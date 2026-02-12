@@ -9,6 +9,7 @@ export default defineConfig({
 		alias: {
 			'$lib': path.resolve(__dirname, '../shared'),
 		},
+		dedupe: ['html2canvas'],
 	},
 	esbuild: {
 		tsconfigRaw: {

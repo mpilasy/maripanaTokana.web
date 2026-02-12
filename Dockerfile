@@ -23,6 +23,9 @@ RUN npm ci
 WORKDIR /app
 COPY . .
 
+# Make html2canvas resolvable from shared/ (outside any app's node_modules)
+RUN mkdir -p node_modules && ln -s /app/svelte/node_modules/html2canvas node_modules/html2canvas
+
 # Build all three apps
 RUN cd svelte && npm run build
 RUN cd react && npm run build
