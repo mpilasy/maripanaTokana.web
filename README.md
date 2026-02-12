@@ -1,6 +1,6 @@
-# maripànaTokana PWA
+# maripána Tokana PWA
 
-**maripànaTokana** (Malagasy for "a single thermometer") is a Progressive Web App weather dashboard that shows current conditions, hourly forecasts, and a 10-day outlook. It always displays both metric and imperial units side by side, and supports 8 languages with 22 font pairings.
+**maripána Tokana** (Malagasy for "a single thermometer") is a Progressive Web App weather dashboard that shows current conditions, hourly forecasts, and a 10-day outlook. It always displays both metric and imperial units side by side, and supports 8 languages with 22 font pairings.
 
 This is the web port of the [Android app](../maripanaTokana/), built with SvelteKit.
 
@@ -17,8 +17,11 @@ This is the web port of the [Android app](../maripanaTokana/), built with Svelte
 - Auto-refresh when tab becomes visible (if data >30 min old)
 - Pull-to-refresh via touch gestures
 - Edge-to-edge Blue Marble background
-- **Installable PWA** with offline support (service worker with 3 cache strategies)
+- **Screenshot sharing**: capture any section as a branded PNG via `html2canvas` + Web Share API (with download fallback)
+- **Installable PWA** with offline support (service worker with NetworkFirst caching)
 - Collapsible sections with slide animation for hourly, daily, and conditions
+- **Dual-language error screen**: shows browser language as secondary when different from app language
+- **Single-file build**: CSS inlined into HTML, JS consolidated into one bundle via `manualChunks`
 - Detailed weather information:
   - Temperature with 1 decimal on hero card (current, feels like, min/max)
   - Pressure (hPa / inHg)
@@ -40,7 +43,7 @@ This is the web port of the [Android app](../maripanaTokana/), built with Svelte
 | Language | TypeScript |
 | Adapter | `@sveltejs/adapter-static` |
 | i18n | `svelte-i18n` |
-| Screenshots | `html2canvas` (installed, not yet wired) |
+| Screenshots | `html2canvas` |
 | Weather API | Open-Meteo (free, no key) |
 | Geocoding | Nominatim (free, no key) |
 
@@ -49,10 +52,12 @@ This is the web port of the [Android app](../maripanaTokana/), built with Svelte
 ```bash
 npm install          # Install dependencies
 npm run dev          # Dev server at localhost:5173
-npm run build        # Production build to build/
+npm run build        # Production build to build/ (includes CSS inlining)
 npm run preview      # Preview production build
 npm run check        # Type-check with svelte-check
 ```
+
+The build step runs `vite build` followed by `scripts/inline-assets.js`, which inlines CSS into `index.html` to reduce HTTP requests.
 
 ## Deployment (Docker)
 
@@ -105,22 +110,22 @@ src/
 │   │   ├── weather.ts            # Weather state machine + fetch logic
 │   │   └── location.ts           # Geolocation + Nominatim reverse geocoding
 │   ├── fonts.ts                  # 22 FontPairing definitions + Google Fonts URLs
+│   ├── share.ts                  # html2canvas capture + Web Share API / download fallback
 │   └── components/
-│       ├── WeatherScreen.svelte      # Root container (state switch, pull-to-refresh)
-│       ├── PermissionScreen.svelte   # Geolocation permission prompt
-│       ├── HeroCard.svelte           # Main weather card (emoji, temp, feels-like, precip)
+│       ├── WeatherScreen.svelte      # Root container (state switch, pull-to-refresh, dual-language error)
+│       ├── HeroCard.svelte           # Main weather card (emoji, temp, feels-like, precip, share btn)
 │       ├── HourlyForecast.svelte     # Horizontal scrolling hourly row (24h)
 │       ├── DailyForecast.svelte      # 10-day vertical list
 │       ├── CurrentConditions.svelte  # Detail cards grid (5 rows × 2 columns)
 │       ├── DetailCard.svelte         # Reusable detail card
 │       ├── DualUnitText.svelte       # Primary + secondary unit display (clickable)
-│       ├── CollapsibleSection.svelte # Animated expand/collapse with slide transition
+│       ├── CollapsibleSection.svelte # Animated expand/collapse with slide transition + share btn
 │       └── Footer.svelte             # Font cycle / credits / language cycle
 ├── routes/
 │   ├── +page.svelte     # Single page — mounts WeatherScreen
 │   └── +layout.svelte   # Root layout (font loading, RTL, i18n init, auto-refresh)
-├── service-worker.ts    # PWA caching (app shell, API NetworkFirst, fonts CacheFirst)
-└── app.html             # Shell HTML with manifest + meta tags
+├── service-worker.ts    # PWA caching (NetworkFirst for app + API, CacheFirst for fonts)
+└── app.html             # Shell HTML with manifest + meta tags + page title
 ```
 
 ## Internationalization
@@ -166,20 +171,6 @@ All numeric formatting uses ASCII digits internally. Native digits are applied v
 | 21 | Roboto + Lora | system-ui | Lora |
 
 Pairings 16–20 use `font-feature-settings: "tnum"` (tabular numbers) for the body font.
-
-## What's NOT Ported from Android
-
-- **Home screen widgets** — No PWA equivalent
-- **WorkManager background updates** — Could use Periodic Background Sync API in the future
-- **Dual-language permission screen** — Browser shows its own geolocation prompt; we show an explanatory screen before triggering it
-- **Build hash in footer** — Uses version string from `package.json` instead
-- **Screenshot sharing** — `html2canvas` is installed but share buttons are not yet wired to the UI
-
-## Known Issues
-
-- **Placeholder assets**: `bg-blue-marble.webp`, `favicon.png`, and PWA icons (`icon-192.png`, `icon-512.png`) are placeholder images that need to be replaced with real assets
-- **CollapsibleSection warning**: Svelte emits `state_referenced_locally` for `let isExpanded = $state(expanded)` — this is intentional (captures initial prop, then manages state internally)
-- **Share feature**: `html2canvas` dependency installed but share buttons not yet added to HeroCard or CollapsibleSection
 
 ## License
 
