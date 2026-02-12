@@ -24,7 +24,8 @@
 	let browserStrings = $state<Record<string, string> | null>(null);
 
 	if (browserLocaleTag) {
-		const loaders: Record<string, () => Promise<{ default: Record<string, string> }>> = {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const loaders: Record<string, () => Promise<{ default: any }>> = {
 			en: () => import('$lib/i18n/locales/en.json'),
 			mg: () => import('$lib/i18n/locales/mg.json'),
 			ar: () => import('$lib/i18n/locales/ar.json'),
