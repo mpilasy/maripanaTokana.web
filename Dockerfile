@@ -32,6 +32,6 @@ RUN cd angular && npm run build
 FROM caddy:alpine
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/svelte/build /srv/svelte
-COPY --from=build /app/react/dist /srv/re
-COPY --from=build /app/angular/dist /srv/an
+COPY --from=build /app/react/dist /srv/react
+COPY --from=build /app/angular/dist /srv/ng
 EXPOSE 80

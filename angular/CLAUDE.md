@@ -1,10 +1,10 @@
-# Angular App (`/an` path)
+# Angular App (`/ng` path)
 
 **Framework:** Angular 19 with CLI build
 **i18n:** Custom translation service with same 8 locale JSON files
 **Screenshots:** `html2canvas` for sharing
 **Build optimization:** AOT compilation, build optimizer, no vendor chunks
-**Base href:** `/an/` configured in angular.json
+**Base href:** `/ng/` configured in angular.json
 
 ## Build & Run
 ```bash
@@ -28,7 +28,7 @@ angular/
 │   ├── main.ts                  # Entry point with service worker registration
 │   ├── index.html               # HTML shell
 │   └── styles.css               # Global styling
-├── angular.json                 # Angular config with baseHref: '/an/'
+├── angular.json                 # Angular config with baseHref: '/ng/'
 └── package.json                 # Angular dependencies
 ```
 

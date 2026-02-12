@@ -44,12 +44,13 @@ docker compose up -d --build          # Default port 3080
 PORT=8080 docker compose up -d --build  # Custom port via env
 ```
 - **Dockerfile:** Multi-stage — builds all three apps in `node:22-alpine`, serves via `caddy:alpine`
-- **Caddyfile:** Path-based routing with SPA fallback for each app (`/`, `/re/*`, `/an/*`), gzip compression, smart caching headers
-- **docker-compose.yml:** Container `maripanaTokana.web`, port `${PORT:-3080}:80`, `restart: unless-stopped`
+- **Caddyfile:** Path-based routing with SPA fallback for each app (`/svelte/*`, `/react/*`, `/ng/*`), gzip compression, smart caching headers
+- **docker-compose.yml:** Container `maripanaTokana.web`, port `${PORT:-3080}:80`, `DEFAULT_APP` env var, `restart: unless-stopped`
 - Three apps served from single instance:
-  - `/` → Svelte app (CSS inlined, single JS bundle)
-  - `/re` → React app (base path `/re/`, single bundle, terser minification)
-  - `/an` → Angular app (base href `/an/`, AOT compilation, build optimizer)
+  - `/svelte` → Svelte app (CSS inlined, single JS bundle)
+  - `/react` → React app (base path `/react/`, single bundle, terser minification)
+  - `/ng` → Angular app (base href `/ng/`, AOT compilation, build optimizer)
+  - `/` → redirects to `/${DEFAULT_APP:-svelte}/` (configurable via env)
 - Designed to sit behind a reverse proxy (e.g., Nginx Proxy Manager) that handles TLS
 
 ### Performance Features

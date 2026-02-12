@@ -5,7 +5,7 @@
 **i18n:** `svelte-i18n` — reactive `$_()` store, 8 JSON locale files in `shared/i18n/locales/`
 **Styling:** Plain CSS with custom properties (`--font-display`, `--font-body`, `--font-features`), no CSS framework
 **Build optimization:** `manualChunks` consolidates JS into one bundle; `scripts/inline-assets.js` inlines CSS into HTML
-**Served at:** `/` (root path)
+**Served at:** `/svelte` (base path configured in `svelte.config.js`)
 
 ## Build & Run
 ```bash
@@ -35,7 +35,7 @@ svelte/
 ├── static/
 │   ├── manifest.json        # PWA manifest
 │   └── ...                  # Icons, background image
-├── svelte.config.js         # SvelteKit config (static adapter, $shared alias)
+├── svelte.config.js         # SvelteKit config (static adapter, base: '/svelte', $shared alias)
 ├── vite.config.ts           # Vite config (single-chunk bundling)
 ├── tsconfig.json
 └── package.json             # Svelte dependencies

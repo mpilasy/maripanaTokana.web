@@ -1,10 +1,10 @@
-# React App (`/re` path)
+# React App (`/react` path)
 
 **Framework:** React 19 with Vite build tool
 **i18n:** `react-i18next` with same 8 locale JSON files
 **Screenshots:** `html2canvas` for sharing
 **Build optimization:** Vite with `minify: 'terser'`, `cssCodeSplit: false`, single bundle via `manualChunks`
-**Base path:** `/re/` configured in vite.config.ts
+**Base path:** `/react/` configured in vite.config.ts
 
 ## Build & Run
 ```bash
@@ -26,7 +26,7 @@ react/
 │   ├── components/      # React components (HeroCard, HourlyForecast, etc.)
 │   └── App.css          # Styling
 ├── index.html           # HTML shell
-├── vite.config.ts       # Vite config with base: '/re/'
+├── vite.config.ts       # Vite config with base: '/react/'
 └── package.json         # React dependencies
 ```
 

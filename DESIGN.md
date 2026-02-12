@@ -684,9 +684,9 @@ RUN cd angular && npm run build
 # Stage 2: Serve all apps
 FROM caddy:alpine
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /app/svelte/build /srv/svelte   # Svelte at /
-COPY --from=build /app/react/dist /srv/re         # React at /re/*
-COPY --from=build /app/angular/dist /srv/an       # Angular at /an/*
+COPY --from=build /app/svelte/build /srv/svelte   # Svelte at /svelte/*
+COPY --from=build /app/react/dist /srv/react      # React at /react/*
+COPY --from=build /app/angular/dist /srv/ng       # Angular at /ng/*
 EXPOSE 80
 ```
 
@@ -696,10 +696,11 @@ The Caddyfile implements path-based routing with optimization:
 
 **Compression**: Gzip enabled for all text assets (JS, CSS, fonts)
 
-**Routing**:
-- `/` → Svelte app (SPA fallback: `try_files {path} /index.html`)
-- `/re/*` → React app (SPA fallback: `try_files {path} /index.html`, base path `/re/`)
-- `/an/*` → Angular app (SPA fallback: `try_files {path} /index.html`, base href `/an/`)
+**Routing** (using `handle_path` for automatic prefix stripping):
+- `/` → redirects to `/${DEFAULT_APP:-svelte}/` (configurable via env var)
+- `/svelte/*` → Svelte app (base path `/svelte/`, SPA fallback)
+- `/react/*` → React app (base path `/react/`, SPA fallback)
+- `/ng/*` → Angular app (base href `/ng/`, SPA fallback)
 
 **Caching**:
 - **Versioned assets** (regex: `.*\.[a-f0-9]{8}\.(js|css|woff2|ttf)$`): `max-age=31536000, immutable` (1 year)
@@ -726,11 +727,13 @@ The Caddyfile implements path-based routing with optimization:
 ### Docker Compose
 
 ```bash
-docker compose up -d --build          # Default port 3080
-PORT=8080 docker compose up -d --build  # Custom port
+docker compose up -d --build                       # Default port 3080, root → /svelte/
+PORT=8080 docker compose up -d --build             # Custom port
+DEFAULT_APP=react docker compose up -d --build     # Root → /react/
+DEFAULT_APP=ng docker compose up -d --build        # Root → /ng/
 ```
 
-The container runs Caddy on port 80, mapped to the host port. All three apps are served from a single Docker instance for simplified deployment and reverse-proxy integration.
+The container runs Caddy on port 80, mapped to the host port. All three apps are served from a single Docker instance. The `DEFAULT_APP` environment variable controls which app `/` redirects to (default: `svelte`).
 
 ---
 

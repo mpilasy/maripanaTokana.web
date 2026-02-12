@@ -6,6 +6,6 @@ bootstrapApplication(AppComponent).catch(err => console.error(err));
 // Register service worker
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('/service-worker.js');
+		navigator.serviceWorker.register('/ng/service-worker.js');
 	});
 }

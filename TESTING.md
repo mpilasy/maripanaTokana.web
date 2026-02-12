@@ -218,18 +218,19 @@ docker compose up -d --build
 ```
 
 Three apps are now available:
-- `http://localhost:3080/` — Svelte app (maripána Tokana)
-- `http://localhost:3080/re` — React port
-- `http://localhost:3080/an` — Angular port
+- `http://localhost:3080/svelte` — Svelte app (maripána Tokana)
+- `http://localhost:3080/react` — React port
+- `http://localhost:3080/ng` — Angular port
+- `http://localhost:3080/` — Redirects to default app (Svelte by default, configurable via `DEFAULT_APP` env var)
 
-### Svelte App (root) — PWA Features:
+### Svelte App (`/svelte`) — PWA Features:
 - [ ] Service worker registers (check DevTools → Application → Service Workers)
 - [ ] Manifest is detected (check DevTools → Application → Manifest)
 - [ ] Chrome shows "Install app" option
 - [ ] Theme color `#0E0B3D` applies to title bar
 - [ ] All standard Svelte app tests pass (see sections 1-12 above)
 
-### React App (`/re`):
+### React App (`/react`):
 - [ ] Page loads with weather data for current location
 - [ ] Layout matches Svelte design (hero card, hourly, daily, conditions)
 - [ ] Dual units display and toggle functionality works
@@ -238,7 +239,7 @@ Three apps are now available:
 - [ ] Service worker registers and caches assets
 - [ ] Pull-to-refresh works on scroll container
 
-### Angular App (`/an`):
+### Angular App (`/ng`):
 - [ ] Page loads with weather data for current location
 - [ ] Layout matches Svelte design
 - [ ] Dual units display and toggle functionality works

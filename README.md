@@ -78,14 +78,22 @@ The container (`maripanaTokana.web`) exposes port 80, mapped to host port `$PORT
 
 | URL | App | Framework |
 |-----|-----|-----------|
-| `/` | maripána Tokana | SvelteKit |
-| `/re` | React Port | React + Vite |
-| `/an` | Angular Port | Angular |
+| `/svelte` | maripána Tokana | SvelteKit |
+| `/react` | React Port | React + Vite |
+| `/ng` | Angular Port | Angular |
+| `/` | Redirect | `→ /${DEFAULT_APP:-svelte}/` |
+
+To change which app `/` points to:
+
+```bash
+DEFAULT_APP=react docker compose up -d --build   # Root → React
+DEFAULT_APP=ng docker compose up -d --build       # Root → Angular
+```
 
 ```
 Dockerfile          # Multi-stage: builds all three apps → caddy serves at different paths
 Caddyfile           # Path-based routing + SPA fallback + gzip compression
-docker-compose.yml  # Container config (port 3080)
+docker-compose.yml  # Container config (port, DEFAULT_APP)
 .dockerignore       # Excludes node_modules, .git, build, .svelte-kit
 ```
 
@@ -118,15 +126,15 @@ maripanaTokana.web/
 │   │   └── app.html
 │   ├── scripts/              # Post-build CSS inlining
 │   ├── static/               # PWA manifest, icons, background
-│   └── svelte.config.js      # $shared alias → ../shared
+│   └── svelte.config.js      # base: '/svelte', $shared alias
 │
 ├── react/                    # React app (port)
 │   ├── src/                  # React components, hooks, i18n
-│   └── vite.config.ts        # $lib alias → ../shared
+│   └── vite.config.ts        # base: '/react/', $lib alias → ../shared
 │
 ├── angular/                  # Angular app (port)
 │   ├── src/                  # Angular components, services, pipes
-│   └── tsconfig.json         # $lib alias → ../shared
+│   └── angular.json          # baseHref: '/ng/', $lib alias → ../shared
 ```
 
 ## Internationalization
