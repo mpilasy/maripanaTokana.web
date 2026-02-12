@@ -1,9 +1,9 @@
 import type { OpenMeteoResponse } from './openMeteoTypes';
-import type { WeatherData, HourlyForecast, DailyForecast } from '$lib/domain/weatherData';
-import { Temperature } from '$lib/domain/temperature';
-import { Pressure } from '$lib/domain/pressure';
-import { WindSpeed } from '$lib/domain/windSpeed';
-import { Precipitation } from '$lib/domain/precipitation';
+import type { WeatherData, HourlyForecast, DailyForecast } from '../domain/weatherData';
+import { Temperature } from '../domain/temperature';
+import { Pressure } from '../domain/pressure';
+import { WindSpeed } from '../domain/windSpeed';
+import { Precipitation } from '../domain/precipitation';
 
 function parseIsoDateTime(iso: string): number {
 	return new Date(iso).getTime();

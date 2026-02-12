@@ -7,7 +7,7 @@ import './i18n';
 // Register service worker
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('/service-worker.js');
+		navigator.serviceWorker.register(import.meta.env.BASE_URL + 'service-worker.js');
 	});
 }
 

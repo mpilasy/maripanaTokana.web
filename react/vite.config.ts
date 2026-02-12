@@ -3,11 +3,11 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-	base: '/re/',
+	base: '/react/',
 	plugins: [react()],
 	resolve: {
 		alias: {
-			'$lib': path.resolve(__dirname, '../src/lib'),
+			'$lib': path.resolve(__dirname, '../shared'),
 		},
 	},
 	esbuild: {

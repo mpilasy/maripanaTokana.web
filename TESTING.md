@@ -3,6 +3,7 @@
 ## Prerequisites
 
 ```bash
+cd svelte
 npm install
 npm run build    # Verify clean build (no errors)
 ```
@@ -15,20 +16,22 @@ The build should complete with zero errors. One non-blocking warning is expected
 ## 1. Build Verification
 
 ```bash
+cd svelte
 npm run build
 npm run check
 ```
 
-- `npm run build` produces output in `build/` directory (runs vite build + CSS inlining)
+- `npm run build` produces output in `svelte/build/` directory (runs vite build + CSS inlining)
 - `npm run check` runs `svelte-check` with no type errors
-- The `build/` directory should contain `index.html` (with CSS inlined), JS bundles, and static assets
-- `index.html` should contain a `<style>` tag (CSS inlined by `scripts/inline-assets.js`)
+- The `svelte/build/` directory should contain `index.html` (with CSS inlined), JS bundles, and static assets
+- `index.html` should contain a `<style>` tag (CSS inlined by `svelte/scripts/inline-assets.js`)
 
 ---
 
 ## 2. Dev Server
 
 ```bash
+cd svelte
 npm run dev
 ```
 
@@ -205,7 +208,7 @@ Tap the font icon (Aa) in the footer to cycle through 22 font pairings.
 
 ### Via npm preview (Svelte app only):
 ```bash
-npm run build && npm run preview
+cd svelte && npm run build && npm run preview
 ```
 Open `http://localhost:4173` in Chrome.
 
@@ -215,18 +218,19 @@ docker compose up -d --build
 ```
 
 Three apps are now available:
-- `http://localhost:3080/` — Svelte app (maripána Tokana)
-- `http://localhost:3080/re` — React port
-- `http://localhost:3080/an` — Angular port
+- `http://localhost:3080/svelte` — Svelte app (maripána Tokana)
+- `http://localhost:3080/react` — React port
+- `http://localhost:3080/ng` — Angular port
+- `http://localhost:3080/` — Redirects to default app (Svelte by default, configurable via `DEFAULT_APP` env var)
 
-### Svelte App (root) — PWA Features:
+### Svelte App (`/svelte`) — PWA Features:
 - [ ] Service worker registers (check DevTools → Application → Service Workers)
 - [ ] Manifest is detected (check DevTools → Application → Manifest)
 - [ ] Chrome shows "Install app" option
 - [ ] Theme color `#0E0B3D` applies to title bar
 - [ ] All standard Svelte app tests pass (see sections 1-12 above)
 
-### React App (`/re`):
+### React App (`/react`):
 - [ ] Page loads with weather data for current location
 - [ ] Layout matches Svelte design (hero card, hourly, daily, conditions)
 - [ ] Dual units display and toggle functionality works
@@ -235,7 +239,7 @@ Three apps are now available:
 - [ ] Service worker registers and caches assets
 - [ ] Pull-to-refresh works on scroll container
 
-### Angular App (`/an`):
+### Angular App (`/ng`):
 - [ ] Page loads with weather data for current location
 - [ ] Layout matches Svelte design
 - [ ] Dual units display and toggle functionality works

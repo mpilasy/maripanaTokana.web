@@ -1,3 +1,4 @@
+const BASE = '/react/';
 const CACHE_APP = 'app-v1';
 const CACHE_API = 'api-cache';
 const CACHE_FONTS = 'font-cache';
@@ -65,7 +66,7 @@ self.addEventListener('fetch', (event) => {
 					caches.open(CACHE_APP).then((cache) => cache.put(event.request, clone));
 					return response;
 				})
-				.catch(() => caches.match(event.request).then((r) => r || caches.match('/index.html')).then((r) => r || new Response('Offline', { status: 503 })))
+				.catch(() => caches.match(event.request).then((r) => r || caches.match(BASE + 'index.html')).then((r) => r || new Response('Offline', { status: 503 })))
 		);
 	}
 });

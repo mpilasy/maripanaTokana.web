@@ -70,7 +70,8 @@ SvelteKit is to Svelte what Next.js is to React — a full application framework
 | `src/routes/+page.svelte` | `app/page.tsx` | Page component for a URL route |
 | `src/routes/+layout.svelte` | `app/layout.tsx` | Shared layout wrapping all pages |
 | `adapter-static` | `output: 'export'` | Generates static HTML (no server needed) |
-| `$lib/` alias | `@/lib/` | Import alias for `src/lib/` directory |
+| `$lib/` alias | `@/lib/` | Import alias for `svelte/src/lib/` directory (Svelte-specific code) |
+| `$shared/` alias | — | Import alias for `shared/` directory (framework-agnostic code) |
 | `src/service-worker.ts` | Custom setup | Built-in service worker support with build manifest |
 
 ---
@@ -79,75 +80,57 @@ SvelteKit is to Svelte what Next.js is to React — a full application framework
 
 ```
 maripanaTokana.web/
-├── src/
-│   ├── app.html                          # HTML shell (viewport, PWA meta, fonts preconnect)
-│   ├── app.d.ts                          # Global TypeScript declarations
-│   ├── service-worker.ts                 # PWA offline caching (3 cache strategies)
-│   │
-│   ├── routes/                           # URL-mapped pages
-│   │   ├── +layout.svelte                # Root layout: fonts, RTL, i18n init, auto-refresh
-│   │   └── +page.svelte                  # Home page: mounts WeatherScreen
-│   │
-│   └── lib/                              # Shared application code
-│       ├── api/                          # Network layer
-│       │   ├── openMeteo.ts              # API client: fetchWeather(lat, lon)
-│       │   ├── openMeteoTypes.ts         # Response type definitions
-│       │   ├── openMeteoMapper.ts        # API response → domain model conversion
-│       │   └── wmoWeatherCode.ts         # WMO code → emoji + i18n key lookup
-│       │
-│       ├── domain/                       # Business logic / value objects
-│       │   ├── weatherData.ts            # WeatherData, HourlyForecast, DailyForecast
-│       │   ├── temperature.ts            # Temperature (°C ↔ °F) with displayDual()
-│       │   ├── pressure.ts               # Pressure (hPa ↔ inHg) with displayDual()
-│       │   ├── windSpeed.ts              # WindSpeed (m/s ↔ mph) with displayDual()
-│       │   └── precipitation.ts          # Precipitation (mm ↔ in) with displayDual()
-│       │
-│       ├── stores/                       # Global reactive state
-│       │   ├── weather.ts                # Weather state machine + fetch orchestration
-│       │   ├── location.ts               # Geolocation + Nominatim reverse geocoding
-│       │   └── preferences.ts            # Persisted user preferences (units, font, language)
-│       │
-│       ├── i18n/                         # Internationalization
-│       │   ├── index.ts                  # svelte-i18n config + localizeDigits()
-│       │   └── locales/                  # 8 JSON translation files
-│       │       ├── mg.json (Malagasy)    ├── ar.json (Arabic)
-│       │       ├── en.json (English)     ├── es.json (Spanish)
-│       │       ├── fr.json (French)      ├── hi.json (Hindi)
-│       │       ├── ne.json (Nepali)      └── zh.json (Chinese)
-│       │
-│       ├── fonts.ts                      # 22 FontPairing definitions + Google Fonts URLs
-│       ├── share.ts                      # html2canvas capture + Web Share API / download
-│       │
-│       └── components/                   # UI components
-│           ├── WeatherScreen.svelte      # Root: state switch, pull-to-refresh, error screen
-│           ├── HeroCard.svelte           # Main weather card (emoji, temp, feels-like)
-│           ├── HourlyForecast.svelte     # 24h horizontal scrolling row
-│           ├── DailyForecast.svelte      # 10-day vertical list
-│           ├── CurrentConditions.svelte  # Detail cards grid (wind, pressure, UV, etc.)
-│           ├── DetailCard.svelte         # Reusable labeled value card
-│           ├── DualUnitText.svelte       # Primary + secondary unit (clickable toggle)
-│           ├── CollapsibleSection.svelte  # Animated expand/collapse with share button
-│           └── Footer.svelte             # Font cycle / credits / language cycle
+├── shared/                               # Framework-agnostic code (used by all 3 apps)
+│   ├── api/                              # Network layer
+│   │   ├── openMeteo.ts                  # API client: fetchWeather(lat, lon)
+│   │   ├── openMeteoTypes.ts             # Response type definitions
+│   │   ├── openMeteoMapper.ts            # API response → domain model conversion
+│   │   └── wmoWeatherCode.ts             # WMO code → emoji + i18n key lookup
+│   ├── domain/                           # Business logic / value objects
+│   │   ├── weatherData.ts                # WeatherData, HourlyForecast, DailyForecast
+│   │   ├── temperature.ts                # Temperature (°C ↔ °F) with displayDual()
+│   │   ├── pressure.ts                   # Pressure (hPa ↔ inHg) with displayDual()
+│   │   ├── windSpeed.ts                  # WindSpeed (m/s ↔ mph) with displayDual()
+│   │   └── precipitation.ts              # Precipitation (mm ↔ in) with displayDual()
+│   ├── i18n/                             # Internationalization
+│   │   ├── locales.ts                    # Locale config + localizeDigits()
+│   │   └── locales/                      # 8 JSON translation files
+│   │       ├── mg.json (Malagasy)    ├── ar.json (Arabic)
+│   │       ├── en.json (English)     ├── es.json (Spanish)
+│   │       ├── fr.json (French)      ├── hi.json (Hindi)
+│   │       ├── ne.json (Nepali)      └── zh.json (Chinese)
+│   ├── stores/
+│   │   └── location.ts                   # Geolocation + Nominatim reverse geocoding
+│   ├── fonts.ts                          # 22 FontPairing definitions + Google Fonts URLs
+│   └── share.ts                          # html2canvas capture + Web Share API / download
 │
-├── static/                               # Files copied as-is to build output
-│   ├── manifest.json                     # PWA manifest
-│   ├── favicon.png                       # Browser tab icon
-│   ├── bg-blue-marble.webp              # Earth background image
-│   ├── robots.txt
-│   └── icons/
-│       ├── icon-192.png                  # PWA install icon
-│       └── icon-512.png                  # PWA splash icon
+├── svelte/                               # Svelte app (primary implementation)
+│   ├── src/
+│   │   ├── app.html                      # HTML shell (viewport, PWA meta, fonts preconnect)
+│   │   ├── app.d.ts                      # Global TypeScript declarations
+│   │   ├── service-worker.ts             # PWA offline caching (3 cache strategies)
+│   │   ├── routes/                       # URL-mapped pages
+│   │   │   ├── +layout.svelte            # Root layout: fonts, RTL, i18n init, auto-refresh
+│   │   │   └── +page.svelte              # Home page: mounts WeatherScreen
+│   │   └── lib/                          # Svelte-specific code
+│   │       ├── i18n/index.ts             # svelte-i18n setup (re-exports from $shared)
+│   │       ├── stores/                   # Svelte writable stores
+│   │       │   ├── weather.ts            # Weather state machine + fetch orchestration
+│   │       │   └── preferences.ts        # Persisted user preferences (units, font, language)
+│   │       └── components/               # UI components (9 .svelte files)
+│   ├── static/                           # Files copied as-is to build output
+│   ├── scripts/inline-assets.js          # Post-build: inlines CSS into HTML
+│   ├── svelte.config.js                  # SvelteKit config (static adapter, $shared alias)
+│   ├── vite.config.ts                    # Vite config (single-chunk bundling)
+│   ├── package.json                      # Svelte dependencies
+│   └── tsconfig.json
 │
-├── scripts/
-│   └── inline-assets.js                  # Post-build: inlines CSS into HTML
-│
-├── svelte.config.js                      # SvelteKit config (static adapter)
-├── vite.config.ts                        # Vite config (single-chunk bundling)
-├── package.json
-├── tsconfig.json
+├── react/                                # React app (port)
+├── angular/                              # Angular app (port)
 ├── Dockerfile                            # Multi-stage: node build → caddy serve
 ├── Caddyfile                             # SPA routing + service worker headers
-└── docker-compose.yml                    # Container config (port 3080)
+├── docker-compose.yml                    # Container config (port 3080)
+└── package.json                          # Root orchestration scripts
 ```
 
 **Total**: ~42 source files, ~2,900 lines of code.
@@ -159,29 +142,29 @@ maripanaTokana.web/
 ### Development
 
 ```
-npm run dev  →  Vite dev server at localhost:5173
-                (hot module replacement, no service worker)
+cd svelte && npm run dev  →  Vite dev server at localhost:5173
+                             (hot module replacement, no service worker)
 ```
 
 ### Production
 
 ```
-npm run build  →  Step 1: vite build
-                          ↓
-                  Compiles .svelte → JS, bundles into single chunk,
-                  generates service-worker.js, copies static/
-                          ↓
-                  Step 2: node scripts/inline-assets.js
-                          ↓
-                  Finds <link href="*.css"> in index.html,
-                  reads CSS file contents, replaces with <style> tag,
-                  deletes the now-unused CSS file
-                          ↓
-                  Output: build/ directory
-                  - index.html (CSS inlined, JS referenced)
-                  - _app/immutable/entry/*.js (single app bundle)
-                  - service-worker.js
-                  - manifest.json, icons, background image
+cd svelte && npm run build  →  Step 1: vite build
+                                       ↓
+                               Compiles .svelte → JS, bundles into single chunk,
+                               generates service-worker.js, copies static/
+                                       ↓
+                               Step 2: node scripts/inline-assets.js
+                                       ↓
+                               Finds <link href="*.css"> in index.html,
+                               reads CSS file contents, replaces with <style> tag,
+                               deletes the now-unused CSS file
+                                       ↓
+                               Output: svelte/build/ directory
+                               - index.html (CSS inlined, JS referenced)
+                               - _app/immutable/entry/*.js (single app bundle)
+                               - service-worker.js
+                               - manifest.json, icons, background image
 ```
 
 ### Why CSS Inlining?
@@ -406,9 +389,9 @@ count.update(n => n + 1);
 // This automatically re-renders when count changes.
 ```
 
-### Three Store Files
+### Svelte Store Files
 
-#### `weather.ts` — Weather State Machine
+#### `stores/weather.ts` — Weather State Machine
 
 ```typescript
 type WeatherState =
@@ -425,7 +408,7 @@ This means the user sees data almost instantly on repeat visits, even before the
 
 `refreshIfStale()` checks if the last fetch was more than 30 minutes ago and triggers a new fetch. It's called on the `visibilitychange` browser event (when the user switches back to the app's tab).
 
-#### `preferences.ts` — Persisted User Preferences
+#### `stores/preferences.ts` — Persisted User Preferences
 
 Three values, all persisted to `localStorage`:
 
@@ -437,9 +420,9 @@ Three values, all persisted to `localStorage`:
 
 The `persistedWritable<T>(key, default)` helper creates a Svelte writable store that reads its initial value from `localStorage` and writes back on every change.
 
-#### `location.ts` — Geolocation Utilities
+### Shared: `shared/stores/location.ts` — Geolocation Utilities
 
-Not a store, but a module of utility functions:
+Framework-agnostic utility functions (not a Svelte store):
 
 - `getPosition()`: Wraps `navigator.geolocation.getCurrentPosition()` in a Promise with 15-second timeout.
 - `reverseGeocode(lat, lon)`: Calls the Nominatim API to convert coordinates to a human-readable place name. Falls back through `city → town → village → county → state → "lat, lon"`.
@@ -590,7 +573,7 @@ When Arabic is selected:
 
 ## 10. Font System
 
-22 font pairings are defined in `fonts.ts`. Each pairing specifies:
+22 font pairings are defined in `shared/fonts.ts`. Each pairing specifies:
 
 ```typescript
 interface FontPairing {
@@ -617,7 +600,7 @@ Font loading happens in `+layout.svelte` via a `<link>` tag injected into `<head
 
 ### Caching Strategies
 
-The service worker (`src/service-worker.ts`) uses three named caches with different strategies:
+The service worker (`svelte/src/service-worker.ts`) uses three named caches with different strategies:
 
 | Cache Name | Strategy | Used For | Rationale |
 |-----------|----------|----------|-----------|
@@ -647,7 +630,7 @@ If the app shell request fails and there's no cache hit, the service worker trie
 
 ## 12. Screenshot Sharing
 
-`share.ts` implements branded screenshot capture:
+`shared/share.ts` implements branded screenshot capture:
 
 1. **Capture**: Uses `html2canvas` (dynamically imported to avoid SSR issues) to render the header element and content element to separate canvases at 2x resolution.
 
@@ -678,30 +661,32 @@ The Docker setup builds and serves three separate applications from a single con
 FROM node:22-alpine
 WORKDIR /app
 
-# Install dependencies and build Svelte app (root)
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Install and build React app (/re path)
+# Install dependencies for each app
+COPY svelte/package.json svelte/package-lock.json ./svelte/
 COPY react/package.json react/package-lock.json ./react/
+COPY angular/package.json angular/package-lock.json ./angular/
+
+WORKDIR /app/svelte
+RUN npm ci
 WORKDIR /app/react
 RUN npm ci
-RUN npm run build
-
-# Install and build Angular app (/an path)
-COPY angular/package.json angular/package-lock.json ./angular/
 WORKDIR /app/angular
 RUN npm ci
-RUN npm run build
+
+WORKDIR /app
+COPY . .
+
+# Build all three apps
+RUN cd svelte && npm run build
+RUN cd react && npm run build
+RUN cd angular && npm run build
 
 # Stage 2: Serve all apps
 FROM caddy:alpine
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /app/build /srv/svelte          # Svelte at /
-COPY --from=build /app/react/dist /srv/re         # React at /re/*
-COPY --from=build /app/angular/dist /srv/an       # Angular at /an/*
+COPY --from=build /app/svelte/build /srv/svelte   # Svelte at /svelte/*
+COPY --from=build /app/react/dist /srv/react      # React at /react/*
+COPY --from=build /app/angular/dist /srv/ng       # Angular at /ng/*
 EXPOSE 80
 ```
 
@@ -711,10 +696,11 @@ The Caddyfile implements path-based routing with optimization:
 
 **Compression**: Gzip enabled for all text assets (JS, CSS, fonts)
 
-**Routing**:
-- `/` → Svelte app (SPA fallback: `try_files {path} /index.html`)
-- `/re/*` → React app (SPA fallback: `try_files {path} /index.html`, base path `/re/`)
-- `/an/*` → Angular app (SPA fallback: `try_files {path} /index.html`, base href `/an/`)
+**Routing** (using `handle_path` for automatic prefix stripping):
+- `/` → redirects to `/${DEFAULT_APP:-svelte}/` (configurable via env var)
+- `/svelte/*` → Svelte app (base path `/svelte/`, SPA fallback)
+- `/react/*` → React app (base path `/react/`, SPA fallback)
+- `/ng/*` → Angular app (base href `/ng/`, SPA fallback)
 
 **Caching**:
 - **Versioned assets** (regex: `.*\.[a-f0-9]{8}\.(js|css|woff2|ttf)$`): `max-age=31536000, immutable` (1 year)
@@ -741,11 +727,13 @@ The Caddyfile implements path-based routing with optimization:
 ### Docker Compose
 
 ```bash
-docker compose up -d --build          # Default port 3080
-PORT=8080 docker compose up -d --build  # Custom port
+docker compose up -d --build                       # Default port 3080, root → /svelte/
+PORT=8080 docker compose up -d --build             # Custom port
+DEFAULT_APP=react docker compose up -d --build     # Root → /react/
+DEFAULT_APP=ng docker compose up -d --build        # Root → /ng/
 ```
 
-The container runs Caddy on port 80, mapped to the host port. All three apps are served from a single Docker instance for simplified deployment and reverse-proxy integration.
+The container runs Caddy on port 80, mapped to the host port. All three apps are served from a single Docker instance. The `DEFAULT_APP` environment variable controls which app `/` redirects to (default: `svelte`).
 
 ---
 
@@ -778,7 +766,7 @@ Vite normally splits code into many small chunks for lazy loading. For this app 
 
 ### CSS Inlining
 
-A post-build script (`scripts/inline-assets.js`) reads the generated CSS file and inlines it as a `<style>` tag in `index.html`. This eliminates one HTTP request. JS is not inlined because ES modules loaded from `data:` URIs cannot resolve relative imports (a browser security restriction).
+A post-build script (`svelte/scripts/inline-assets.js`) reads the generated CSS file and inlines it as a `<style>` tag in `index.html`. This eliminates one HTTP request. JS is not inlined because ES modules loaded from `data:` URIs cannot resolve relative imports (a browser security restriction).
 
 ### No Precaching
 
@@ -795,7 +783,7 @@ Temperature, Pressure, WindSpeed, and Precipitation are immutable classes with p
 | Category | Files | Lines |
 |----------|-------|-------|
 | Components | 9 | ~1,280 |
-| Stores | 3 | ~180 |
+| Stores | 2 | ~120 |
 | API | 4 | ~217 |
 | Domain | 5 | ~177 |
 | i18n | 9 | ~535 |

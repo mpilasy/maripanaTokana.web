@@ -3,7 +3,7 @@
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 
-import { build, files, version } from '$service-worker';
+import { base, build, files, version } from '$service-worker';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 const CACHE_APP = `app-${version}`;
@@ -78,7 +78,7 @@ sw.addEventListener('fetch', (event) => {
 					}
 					return response;
 				})
-				.catch(() => caches.match(event.request).then((r) => r || caches.match('/index.html')).then((r) => r || new Response('Offline', { status: 503 })))
+				.catch(() => caches.match(event.request).then((r) => r || caches.match(base + '/index.html')).then((r) => r || new Response('Offline', { status: 503 })))
 		);
 	}
 });

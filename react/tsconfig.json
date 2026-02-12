@@ -19,7 +19,7 @@
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"paths": {
-			"$lib/*": ["../src/lib/*"]
+			"$lib/*": ["../shared/*"]
 		}
 	},
 	"include": ["src"]

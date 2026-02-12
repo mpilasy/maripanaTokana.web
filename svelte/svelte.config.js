@@ -9,7 +9,13 @@ const config = {
 			fallback: 'index.html',
 			precompress: false,
 			strict: true
-		})
+		}),
+		paths: {
+			base: '/svelte'
+		},
+		alias: {
+			'$shared': '../shared'
+		}
 	}
 };
 
