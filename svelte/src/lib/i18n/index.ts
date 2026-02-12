@@ -1,16 +1,16 @@
 import { register, init, getLocaleFromNavigator } from 'svelte-i18n';
-export { SUPPORTED_LOCALES, localizeDigits } from './locales';
-export type { SupportedLocale } from './locales';
-import { SUPPORTED_LOCALES } from './locales';
+export { SUPPORTED_LOCALES, localizeDigits } from '$shared/i18n/locales';
+export type { SupportedLocale } from '$shared/i18n/locales';
+import { SUPPORTED_LOCALES } from '$shared/i18n/locales';
 
-register('en', () => import('./locales/en.json'));
-register('mg', () => import('./locales/mg.json'));
-register('ar', () => import('./locales/ar.json'));
-register('es', () => import('./locales/es.json'));
-register('fr', () => import('./locales/fr.json'));
-register('hi', () => import('./locales/hi.json'));
-register('ne', () => import('./locales/ne.json'));
-register('zh', () => import('./locales/zh.json'));
+register('en', () => import('$shared/i18n/locales/en.json'));
+register('mg', () => import('$shared/i18n/locales/mg.json'));
+register('ar', () => import('$shared/i18n/locales/ar.json'));
+register('es', () => import('$shared/i18n/locales/es.json'));
+register('fr', () => import('$shared/i18n/locales/fr.json'));
+register('hi', () => import('$shared/i18n/locales/hi.json'));
+register('ne', () => import('$shared/i18n/locales/ne.json'));
+register('zh', () => import('$shared/i18n/locales/zh.json'));
 
 export function initI18n(savedLocaleTag?: string) {
 	const fallback = 'mg';

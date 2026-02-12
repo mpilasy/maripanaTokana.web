@@ -7,7 +7,7 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-			'$lib': path.resolve(__dirname, '../svelte/src/lib'),
+			'$lib': path.resolve(__dirname, '../shared'),
 		},
 	},
 	esbuild: {

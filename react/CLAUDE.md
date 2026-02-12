@@ -30,6 +30,9 @@ react/
 └── package.json         # React dependencies
 ```
 
+## Shared Code
+Imports framework-agnostic code from `shared/` via `$lib` alias (configured in vite.config.ts and tsconfig.json to resolve to `../shared`).
+
 ## Performance
 - Terser minification, no sourcemaps
 - Single bundle via `manualChunks`, `cssCodeSplit: false`

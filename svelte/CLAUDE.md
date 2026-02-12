@@ -2,7 +2,7 @@
 
 **Framework:** SvelteKit with Svelte 5 runes (`$state`, `$derived`, `$effect`, `$props`), TypeScript
 **Adapter:** `@sveltejs/adapter-static` (fully static, no server-side logic)
-**i18n:** `svelte-i18n` — reactive `$_()` store, 8 JSON locale files in `src/lib/i18n/locales/`
+**i18n:** `svelte-i18n` — reactive `$_()` store, 8 JSON locale files in `shared/i18n/locales/`
 **Styling:** Plain CSS with custom properties (`--font-display`, `--font-body`, `--font-features`), no CSS framework
 **Build optimization:** `manualChunks` consolidates JS into one bundle; `scripts/inline-assets.js` inlines CSS into HTML
 **Served at:** `/` (root path)
@@ -22,12 +22,8 @@ npm run check        # Type-check with svelte-check
 svelte/
 ├── src/
 │   ├── lib/
-│   │   ├── api/             # Open-Meteo fetch client, types, mapper, WMO codes
-│   │   ├── domain/          # Value classes: Temperature, Pressure, WindSpeed, Precipitation
-│   │   ├── i18n/            # svelte-i18n setup + 8 locale JSON files
-│   │   ├── stores/          # Svelte writable stores (preferences, weather state, location)
-│   │   ├── fonts.ts         # 22 FontPairing definitions + Google Fonts URLs
-│   │   ├── share.ts         # html2canvas capture + Web Share API / download fallback
+│   │   ├── i18n/index.ts    # svelte-i18n setup (re-exports from $shared/i18n/locales)
+│   │   ├── stores/          # Svelte writable stores (preferences, weather state)
 │   │   └── components/      # All Svelte components (9 files)
 │   ├── routes/
 │   │   ├── +page.svelte     # Single page — mounts WeatherScreen
@@ -39,11 +35,13 @@ svelte/
 ├── static/
 │   ├── manifest.json        # PWA manifest
 │   └── ...                  # Icons, background image
-├── svelte.config.js         # SvelteKit config (static adapter)
+├── svelte.config.js         # SvelteKit config (static adapter, $shared alias)
 ├── vite.config.ts           # Vite config (single-chunk bundling)
 ├── tsconfig.json
 └── package.json             # Svelte dependencies
 ```
+
+Shared code (api, domain, i18n locales, fonts, share, location) lives in `shared/` at the repo root and is imported via the `$shared` alias configured in `svelte.config.js`.
 
 ## Component Details
 - **WeatherScreen.svelte:** State machine switch (`loading | success | error`), pull-to-refresh, `loc()` for digit localization, dual-language error screen with browser locale detection, auto-fetch on mount.

@@ -10,6 +10,7 @@
 ## Project Layout
 ```
 maripanaTokana.web/
+├── shared/             # Framework-agnostic code (api, domain, i18n, fonts, share)
 ├── svelte/             # Svelte app (primary implementation)
 ├── react/              # React app (separate package.json, vite.config.ts)
 ├── angular/            # Angular app (separate package.json, angular.json)
@@ -19,6 +20,17 @@ maripanaTokana.web/
 ├── package.json        # Root scripts (build:all, build:svelte, build:react, build:angular)
 └── CLAUDE.md           # This file
 ```
+
+### Shared Code (`shared/`)
+Framework-agnostic TypeScript used by all three apps:
+- **`api/`** — Open-Meteo fetch client, response types, mapper, WMO weather codes
+- **`domain/`** — Value classes: Temperature, Pressure, WindSpeed, Precipitation, WeatherData
+- **`i18n/`** — Locale definitions (`locales.ts`), `localizeDigits()`, 8 JSON translation files
+- **`stores/location.ts`** — Geolocation utilities + Nominatim reverse geocoding
+- **`fonts.ts`** — 22 FontPairing definitions + Google Fonts URLs
+- **`share.ts`** — html2canvas capture + Web Share API / download fallback
+
+Svelte imports shared code via `$shared/...` alias. React and Angular import via `$lib/...` alias (resolved to `shared/` in their configs).
 
 ## Build All / Docker
 ```bash

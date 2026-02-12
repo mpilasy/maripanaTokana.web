@@ -19,7 +19,7 @@
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"paths": {
-			"$lib/*": ["../svelte/src/lib/*"]
+			"$lib/*": ["../shared/*"]
 		}
 	},
 	"include": ["src"]

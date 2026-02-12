@@ -32,6 +32,9 @@ angular/
 └── package.json                 # Angular dependencies
 ```
 
+## Shared Code
+Imports framework-agnostic code from `shared/` via `$lib` alias (configured in tsconfig.json to resolve to `../shared`).
+
 ## Performance
 - AOT compilation, build optimizer
 - No sourcemaps, `vendorChunk: false`

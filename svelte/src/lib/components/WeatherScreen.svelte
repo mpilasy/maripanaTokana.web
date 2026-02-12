@@ -3,14 +3,14 @@
 	import { weatherState, isRefreshing, doFetchWeather } from '$lib/stores/weather';
 	import { metricPrimary, fontIndex, localeIndex, toggleUnits, cycleFont, cycleLanguage } from '$lib/stores/preferences';
 	import { SUPPORTED_LOCALES, localizeDigits } from '$lib/i18n/index';
-	import { fontPairings } from '$lib/fonts';
+	import { fontPairings } from '$shared/fonts';
 	import HeroCard from './HeroCard.svelte';
 	import HourlyForecast from './HourlyForecast.svelte';
 	import DailyForecast from './DailyForecast.svelte';
 	import CurrentConditions from './CurrentConditions.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
 	import Footer from './Footer.svelte';
-	import { captureAndShare } from '$lib/share';
+	import { captureAndShare } from '$shared/share';
 	import { onMount } from 'svelte';
 
 	// Browser locale detection for secondary language on error screen
@@ -26,14 +26,14 @@
 	if (browserLocaleTag) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const loaders: Record<string, () => Promise<{ default: any }>> = {
-			en: () => import('$lib/i18n/locales/en.json'),
-			mg: () => import('$lib/i18n/locales/mg.json'),
-			ar: () => import('$lib/i18n/locales/ar.json'),
-			es: () => import('$lib/i18n/locales/es.json'),
-			fr: () => import('$lib/i18n/locales/fr.json'),
-			hi: () => import('$lib/i18n/locales/hi.json'),
-			ne: () => import('$lib/i18n/locales/ne.json'),
-			zh: () => import('$lib/i18n/locales/zh.json'),
+			en: () => import('$shared/i18n/locales/en.json'),
+			mg: () => import('$shared/i18n/locales/mg.json'),
+			ar: () => import('$shared/i18n/locales/ar.json'),
+			es: () => import('$shared/i18n/locales/es.json'),
+			fr: () => import('$shared/i18n/locales/fr.json'),
+			hi: () => import('$shared/i18n/locales/hi.json'),
+			ne: () => import('$shared/i18n/locales/ne.json'),
+			zh: () => import('$shared/i18n/locales/zh.json'),
 		};
 		loaders[browserLocaleTag]?.().then(mod => browserStrings = mod.default);
 	}
