@@ -201,25 +201,56 @@ Tap the font icon (Aa) in the footer to cycle through 22 font pairings.
 
 ---
 
-## 13. PWA / Installability
+## 13. PWA / Installability & Docker Testing
 
-### Via npm preview:
+### Via npm preview (Svelte app only):
 ```bash
 npm run build && npm run preview
 ```
 Open `http://localhost:4173` in Chrome.
 
-### Via Docker:
+### Via Docker (all three apps):
 ```bash
 docker compose up -d --build
 ```
-Open `http://localhost:3080` in Chrome.
 
+Three apps are now available:
+- `http://localhost:3080/` — Svelte app (maripána Tokana)
+- `http://localhost:3080/re` — React port
+- `http://localhost:3080/an` — Angular port
+
+### Svelte App (root) — PWA Features:
 - [ ] Service worker registers (check DevTools → Application → Service Workers)
 - [ ] Manifest is detected (check DevTools → Application → Manifest)
-- [ ] Chrome shows "Install app" option (address bar or menu)
-- [ ] After installing, app opens in standalone window (no browser chrome)
-- [ ] Theme color `#0E0B3D` applies to title bar/status bar
+- [ ] Chrome shows "Install app" option
+- [ ] Theme color `#0E0B3D` applies to title bar
+- [ ] All standard Svelte app tests pass (see sections 1-12 above)
+
+### React App (`/re`):
+- [ ] Page loads with weather data for current location
+- [ ] Layout matches Svelte design (hero card, hourly, daily, conditions)
+- [ ] Dual units display and toggle functionality works
+- [ ] Language switching works (flag in footer)
+- [ ] Font cycling works (Aa button in footer)
+- [ ] Service worker registers and caches assets
+- [ ] Pull-to-refresh works on scroll container
+
+### Angular App (`/an`):
+- [ ] Page loads with weather data for current location
+- [ ] Layout matches Svelte design
+- [ ] Dual units display and toggle functionality works
+- [ ] Language switching works
+- [ ] Font cycling works
+- [ ] Service worker registers and caches assets
+- [ ] Share buttons work correctly
+
+### Performance Checks:
+- [ ] Network tab shows gzip compression on JS/CSS/fonts
+- [ ] Versioned assets have long cache headers (`max-age=31536000`)
+- [ ] HTML files have `no-cache` headers (not cached)
+- [ ] First visit: downloads all assets
+- [ ] Repeat visit: browser checks HTML, reuses cached JS/CSS/fonts (minimal requests)
+- [ ] DevTools → Coverage shows <50% unused JS per app (due to build optimization)
 
 ---
 

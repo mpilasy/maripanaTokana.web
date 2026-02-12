@@ -10,20 +10,27 @@
 				"build": {
 					"builder": "@angular-devkit/build-angular:application",
 					"options": {
+						"baseHref": "/an/",
 						"outputPath": "dist",
 						"index": "src/index.html",
 						"browser": "src/main.ts",
 						"tsConfig": "tsconfig.app.json",
 						"assets": [{ "glob": "**/*", "input": "public" }],
 						"styles": ["src/styles.css"],
-						"scripts": []
+						"scripts": [],
+						"vendorChunk": false,
+						"sourceMap": false,
+						"optimization": true
 					},
 					"configurations": {
 						"production": {
 							"budgets": [
-								{ "type": "initial", "maximumWarning": "500kB", "maximumError": "1.5MB" }
+								{ "type": "initial", "maximumWarning": "750kB", "maximumError": "2MB" }
 							],
-							"outputHashing": "all"
+							"outputHashing": "all",
+							"aot": true,
+							"buildOptimizer": true,
+							"sourceMap": false
 						},
 						"development": {
 							"optimization": false,

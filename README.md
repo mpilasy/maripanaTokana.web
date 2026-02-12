@@ -61,7 +61,7 @@ The build step runs `vite build` followed by `scripts/inline-assets.js`, which i
 
 ## Deployment (Docker)
 
-Multi-stage Docker build: node builds the static site, Caddy serves it.
+Multi-stage Docker build: node builds all three apps (Svelte, React, Angular), Caddy serves them at different paths.
 
 ```bash
 docker compose up -d --build    # Build and run on port 3080 (default)
@@ -73,14 +73,27 @@ To use a custom port, create a `.env` file or pass it inline:
 PORT=8080 docker compose up -d --build
 ```
 
-The container (`maripanaTokana.web`) exposes port 80, mapped to host port `$PORT` (default 3080). Point your reverse proxy (e.g., Nginx Proxy Manager) at `http://<host>:<port>`.
+The container (`maripanaTokana.web`) exposes port 80, mapped to host port `$PORT` (default 3080). Three apps are available:
+
+| URL | App | Framework |
+|-----|-----|-----------|
+| `/` | maripána Tokana | SvelteKit |
+| `/re` | React Port | React + Vite |
+| `/an` | Angular Port | Angular |
 
 ```
-Dockerfile          # Multi-stage: node:22-alpine → caddy:alpine
-Caddyfile           # SPA fallback + no-cache for service worker
+Dockerfile          # Multi-stage: builds all three apps → caddy serves at different paths
+Caddyfile           # Path-based routing + SPA fallback + gzip compression
 docker-compose.yml  # Container config (port 3080)
 .dockerignore       # Excludes node_modules, .git, build, .svelte-kit
 ```
+
+### Performance
+- **Gzip compression**: All text assets (JS, CSS, fonts) automatically compressed
+- **Smart caching**: Versioned assets (hash in filename) cached for 1 year; HTML/service-worker always revalidated
+- **Minimal repeat visits**: Only HTML/SW checked on return; JS/CSS served from cache if unchanged
+- **React optimizations**: Terser minification, no sourcemaps, single bundle
+- **Angular optimizations**: AOT compilation, build optimizer enabled
 
 ## Architecture
 
