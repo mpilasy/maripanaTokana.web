@@ -36,7 +36,7 @@ i18n.use(initReactI18next).init({
 	resources,
 	lng: initialLocale,
 	fallbackLng: 'mg',
-	interpolation: { escapeValue: false },
+	interpolation: { escapeValue: false, prefix: '{', suffix: '}' },
 	returnObjects: true,
 });
 
