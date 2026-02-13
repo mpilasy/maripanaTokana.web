@@ -33,6 +33,9 @@ react/
 ## Shared Code
 Imports framework-agnostic code from `shared/` via `$lib` alias (configured in vite.config.ts and tsconfig.json to resolve to `../shared`).
 
+## i18n Notes
+- `returnObjects: true` is enabled in i18next config so `t()` can return arrays (needed for `cardinal_directions`, `uv_labels`)
+
 ## Performance
 - Terser minification, no sourcemaps
 - Single bundle via `manualChunks`, `cssCodeSplit: false`

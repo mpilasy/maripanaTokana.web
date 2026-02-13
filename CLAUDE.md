@@ -43,13 +43,13 @@ docker compose up -d --build
 docker compose up -d --build          # Default port 3080
 PORT=8080 docker compose up -d --build  # Custom port via env
 ```
-- **Dockerfile:** Multi-stage — builds all three apps in `node:22-alpine`, serves via `caddy:alpine`
+- **Dockerfile:** Multi-stage — builds all three apps in `node:22-alpine`, serves via `caddy:alpine`. Uses root-level `html2canvas` symlink for shared code resolution.
 - **Caddyfile:** Path-based routing with SPA fallback for each app (`/svelte/*`, `/react/*`, `/ng/*`), gzip compression, smart caching headers
 - **docker-compose.yml:** Container `maripanaTokana.web`, port `${PORT:-3080}:80`, `DEFAULT_APP` env var, `restart: unless-stopped`
 - Three apps served from single instance:
   - `/svelte` → Svelte app (CSS inlined, single JS bundle)
   - `/react` → React app (base path `/react/`, single bundle, terser minification)
-  - `/ng` → Angular app (base href `/ng/`, AOT compilation, build optimizer)
+  - `/ng` → Angular app (base href `/ng/`, esbuild application builder)
   - `/` → redirects to `/${DEFAULT_APP:-svelte}/` (configurable via env)
 - Designed to sit behind a reverse proxy (e.g., Nginx Proxy Manager) that handles TLS
 

@@ -3,7 +3,7 @@
 **Framework:** Angular 19 with CLI build
 **i18n:** Custom translation service with same 8 locale JSON files
 **Screenshots:** `html2canvas` for sharing
-**Build optimization:** AOT compilation, build optimizer, no vendor chunks
+**Build optimization:** Angular 19 esbuild application builder (AOT by default)
 **Base href:** `/ng/` configured in angular.json
 
 ## Build & Run
@@ -11,7 +11,7 @@
 cd angular
 npm install          # Install dependencies
 npm run start        # Dev server (ng serve)
-npm run build        # Production build to angular/dist/
+npm run build        # Production build to angular/dist/browser/
 npm run watch        # Build in watch mode
 ```
 
@@ -35,6 +35,13 @@ angular/
 ## Shared Code
 Imports framework-agnostic code from `shared/` via `$lib` alias (configured in tsconfig.json to resolve to `../shared`).
 
+## Angular 19 Notes
+- Uses `application` builder (esbuild-based), NOT the legacy `browser` builder (webpack)
+- `vendorChunk`, `buildOptimizer`, `aot` options are NOT supported — they are implicit
+- Output goes to `dist/browser/` (not `dist/`)
+- Requires explicit `"polyfills": ["zone.js"]` in angular.json
+- Custom `I18nService` provides `t(key)` for strings and `tArray(key)` for array translations (e.g., `cardinal_directions`, `uv_labels`)
+
 ## Performance
-- AOT compilation, build optimizer
-- No sourcemaps, `vendorChunk: false`
+- esbuild compilation (AOT by default)
+- No sourcemaps
