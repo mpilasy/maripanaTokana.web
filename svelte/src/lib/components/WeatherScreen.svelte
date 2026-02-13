@@ -132,7 +132,9 @@
 					<h1 class="location-name">{data.locationName}</h1>
 					<p class="date">{formatDate(data.timestamp)}</p>
 				</div>
-				<p class="updated">{$_('updated_time', { values: { time: loc(formatTime(data.timestamp)) } })}</p>
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<p class="updated" onclick={doFetchWeather}>{$_('updated_time', { values: { time: loc(formatTime(data.timestamp)) } })}</p>
 			</div>
 
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -273,6 +275,7 @@
 	.updated {
 		font-size: 12px;
 		color: rgba(255,255,255,0.4);
+		cursor: pointer;
 	}
 
 	.scroll-area {

@@ -9,6 +9,48 @@ import { DetailCardComponent } from './detail-card.component';
 	imports: [DetailCardComponent],
 	template: `
 		<div class="conditions-grid">
+			<!-- High / Low merged card -->
+			<div class="merged-card" (click)="onToggleUnits.emit()">
+				<span class="highlow-arrow">↓</span>
+				<span class="merged-values">
+					<span class="merged-primary">{{ minDual()[0] }}</span>
+					<span class="merged-secondary">{{ minDual()[1] }}</span>
+				</span>
+				<span class="merged-label">{{ i18n.t('detail_high_low') }}</span>
+				<span class="merged-values merged-values-end">
+					<span class="merged-primary">{{ maxDual()[0] }}</span>
+					<span class="merged-secondary">{{ maxDual()[1] }}</span>
+				</span>
+				<span class="highlow-arrow">↑</span>
+			</div>
+
+			<!-- Wind merged card -->
+			<div class="merged-card" (click)="onToggleUnits.emit()">
+				<div class="wind-side">
+					<span class="merged-values">
+						<span class="merged-primary">{{ windDual()[0] }}</span>
+						<span class="merged-secondary">{{ windDual()[1] }}</span>
+					</span>
+					<span class="wind-subtitle">{{ windSubtitle() }}</span>
+				</div>
+				<span class="merged-label">{{ i18n.t('detail_wind') }}</span>
+				<div class="wind-side wind-side-end">
+					@if (gustDual()) {
+						<span class="merged-values merged-values-end">
+							<span class="merged-primary">{{ gustDual()![0] }}</span>
+							<span class="merged-secondary">{{ gustDual()![1] }}</span>
+						</span>
+					}
+				</div>
+			</div>
+
+			<!-- Sunrise / Sunset merged card -->
+			<div class="merged-card sun-card">
+				<span class="sun-time">{{ loc()(formatTime(data().sunrise)) }}</span>
+				<span class="sun-icon">☀️</span>
+				<span class="sun-time">{{ loc()(formatTime(data().sunset)) }}</span>
+			</div>
+
 			<div class="temp-now-card">
 				<span class="card-title">{{ i18n.t('detail_temperature') }}</span>
 				<span class="temp-now-values" (click)="onToggleUnits.emit()">
@@ -29,16 +71,6 @@ import { DetailCardComponent } from './detail-card.component';
 				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="i18n.t('no_precip')" />
 			}
 
-			<app-detail-card [title]="'↓ ' + i18n.t('detail_min_temp')" [value]="minDual()[0]" [secondaryValue]="minDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
-			<app-detail-card [title]="'↑ ' + i18n.t('detail_max_temp')" [value]="maxDual()[0]" [secondaryValue]="maxDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
-
-			<app-detail-card [title]="i18n.t('detail_wind')" [value]="windDual()[0]" [secondaryValue]="windDual()[1]" [subtitle]="windSubtitle()" (onToggleUnits)="onToggleUnits.emit()" />
-			@if (gustDual()) {
-				<app-detail-card [title]="i18n.t('detail_wind_gust')" [value]="gustDual()![0]" [secondaryValue]="gustDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
-			} @else {
-				<div class="placeholder"></div>
-			}
-
 			<app-detail-card [title]="i18n.t('detail_pressure')" [value]="pressDual()[0]" [secondaryValue]="pressDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
 			<div class="humidity-card">
 				<span class="card-title">{{ i18n.t('detail_humidity') }}</span>
@@ -52,14 +84,23 @@ import { DetailCardComponent } from './detail-card.component';
 
 			<app-detail-card [title]="i18n.t('detail_uv_index')" [value]="loc()(data().uvIndex.toFixed(1))" [subtitle]="uvLabel()" />
 			<app-detail-card [title]="i18n.t('detail_visibility')" [value]="visDual()[0]" [secondaryValue]="visDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
-
-			<app-detail-card [title]="i18n.t('detail_sunrise')" [value]="loc()(formatTime(data().sunrise))" />
-			<app-detail-card [title]="i18n.t('detail_sunset')" [value]="loc()(formatTime(data().sunset))" />
 		</div>
 	`,
 	styles: `
 		.conditions-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 16px; }
-		.placeholder { }
+		.merged-card { grid-column: 1 / -1; background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
+		.merged-label { font-size: 12px; color: rgba(255,255,255,0.5); text-align: center; }
+		.merged-values { display: flex; align-items: baseline; gap: 4px; }
+		.merged-values-end { justify-content: flex-end; }
+		.merged-primary { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
+		.merged-secondary { font-family: var(--font-display); font-size: 12px; color: rgba(255,255,255,0.55); font-feature-settings: var(--font-features); }
+		.highlow-arrow { font-size: 24px; color: rgba(255,255,255,0.7); }
+		.wind-side { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+		.wind-side-end { align-items: flex-end; }
+		.wind-subtitle { font-size: 12px; color: rgba(255,255,255,0.6); }
+		.sun-card { cursor: default; }
+		.sun-time { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
+		.sun-icon { font-size: 24px; }
 		.temp-now-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 		.temp-now-values { cursor: pointer; }
 		.temp-now-secondary { font-family: var(--font-display); font-size: 14px; color: rgba(255,255,255,0.55); margin-left: 4px; }

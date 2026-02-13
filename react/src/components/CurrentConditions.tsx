@@ -56,6 +56,48 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 
 	return (
 		<div className="conditions-grid">
+			{/* High / Low merged card */}
+			<div className="detail-card merged-card highlow-card" onClick={onToggleUnits}>
+				<span className="highlow-arrow">↓</span>
+				<span className="merged-values">
+					<span className="merged-primary">{loc(minDual[0])}</span>
+					<span className="merged-secondary">{loc(minDual[1])}</span>
+				</span>
+				<span className="merged-label">{t('detail_high_low')}</span>
+				<span className="merged-values merged-values-end">
+					<span className="merged-primary">{loc(maxDual[0])}</span>
+					<span className="merged-secondary">{loc(maxDual[1])}</span>
+				</span>
+				<span className="highlow-arrow">↑</span>
+			</div>
+
+			{/* Wind merged card */}
+			<div className="detail-card merged-card wind-merged-card" onClick={onToggleUnits}>
+				<div className="wind-side">
+					<span className="merged-values">
+						<span className="merged-primary">{loc(windDual[0])}</span>
+						<span className="merged-secondary">{loc(windDual[1])}</span>
+					</span>
+					<span className="wind-subtitle">{loc(`${getCardinalDirection(data.windDeg, t)} (${data.windDeg}°)`)}</span>
+				</div>
+				<span className="merged-label">{t('detail_wind')}</span>
+				<div className="wind-side wind-side-end">
+					{gustDual && (
+						<span className="merged-values merged-values-end">
+							<span className="merged-primary">{loc(gustDual[0])}</span>
+							<span className="merged-secondary">{loc(gustDual[1])}</span>
+						</span>
+					)}
+				</div>
+			</div>
+
+			{/* Sunrise / Sunset merged card */}
+			<div className="detail-card merged-card sun-card">
+				<span className="sun-time">{loc(formatTime(data.sunrise))}</span>
+				<span className="sun-icon">☀️</span>
+				<span className="sun-time">{loc(formatTime(data.sunset))}</span>
+			</div>
+
 			{/* Temperature Now + Feels Like */}
 			<div className="detail-card temp-now-card">
 				<span className="detail-card-title">{t('detail_temperature')}</span>
@@ -92,37 +134,6 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 			)}
 
 			<DetailCard
-				title={"\u2193 " + t('detail_min_temp')}
-				value={loc(minDual[0])}
-				secondaryValue={loc(minDual[1])}
-				onToggleUnits={onToggleUnits}
-			/>
-			<DetailCard
-				title={"\u2191 " + t('detail_max_temp')}
-				value={loc(maxDual[0])}
-				secondaryValue={loc(maxDual[1])}
-				onToggleUnits={onToggleUnits}
-			/>
-
-			<DetailCard
-				title={t('detail_wind')}
-				value={loc(windDual[0])}
-				secondaryValue={loc(windDual[1])}
-				subtitle={loc(`${getCardinalDirection(data.windDeg, t)} (${data.windDeg}°)`)}
-				onToggleUnits={onToggleUnits}
-			/>
-			{gustDual ? (
-				<DetailCard
-					title={t('detail_wind_gust')}
-					value={loc(gustDual[0])}
-					secondaryValue={loc(gustDual[1])}
-					onToggleUnits={onToggleUnits}
-				/>
-			) : (
-				<div className="detail-card-placeholder" />
-			)}
-
-			<DetailCard
 				title={t('detail_pressure')}
 				value={loc(pressDual[0])}
 				secondaryValue={loc(pressDual[1])}
@@ -149,15 +160,6 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 				value={loc(visDual[0])}
 				secondaryValue={loc(visDual[1])}
 				onToggleUnits={onToggleUnits}
-			/>
-
-			<DetailCard
-				title={t('detail_sunrise')}
-				value={loc(formatTime(data.sunrise))}
-			/>
-			<DetailCard
-				title={t('detail_sunset')}
-				value={loc(formatTime(data.sunset))}
 			/>
 		</div>
 	);

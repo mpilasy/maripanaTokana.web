@@ -61,6 +61,7 @@
 	"detail_sunrise": "日出",
 	"detail_temperature": "温度",
 	"detail_precipitation": "降水",
+	"detail_high_low": "最高 / 最低",
 	"detail_sunset": "日落",
 	"credits_weather_data": "天气数据来自 ",
 	"cardinal_directions": ["北","北北东","北东","东北东","东","东南东","南东","南南东","南","南南西","南西","西南西","西","西北西","北西","北北西"],

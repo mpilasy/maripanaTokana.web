@@ -117,7 +117,7 @@ export default function WeatherScreen() {
 									<h1 className="location-name">{data.locationName}</h1>
 									<p className="date">{formatDate(data.timestamp)}</p>
 								</div>
-								<p className="updated">{t('updated_time', { time: loc(formatTime(data.timestamp)) })}</p>
+								<p className="updated" onClick={doFetchWeather}>{t('updated_time', { time: loc(formatTime(data.timestamp)) })}</p>
 							</div>
 
 							<div

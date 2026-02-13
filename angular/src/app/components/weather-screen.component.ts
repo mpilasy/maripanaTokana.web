@@ -45,7 +45,7 @@ import { FooterComponent } from './footer.component';
 							<h1 class="location-name">{{ successData()!.locationName }}</h1>
 							<p class="date">{{ formatDate(successData()!.timestamp) }}</p>
 						</div>
-						<p class="updated">{{ 'updated_time' | translate:{ time: loc(formatTime(successData()!.timestamp)) } }}</p>
+						<p class="updated" (click)="weather.doFetchWeather()">{{ 'updated_time' | translate:{ time: loc(formatTime(successData()!.timestamp)) } }}</p>
 					</div>
 
 					<div class="scroll-area" role="region" #scrollEl
@@ -108,7 +108,7 @@ import { FooterComponent } from './footer.component';
 		.header { padding-top: 24px; flex-shrink: 0; }
 		.location-name { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: white; }
 		.date { font-size: 16px; color: rgba(255,255,255,0.7); }
-		.updated { font-size: 12px; color: rgba(255,255,255,0.4); }
+		.updated { font-size: 12px; color: rgba(255,255,255,0.4); cursor: pointer; }
 		.scroll-area { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; padding: 24px 0; -webkit-overflow-scrolling: touch; }
 		.scroll-bottom-pad { height: 24px; }
 		.pull-indicator { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; }

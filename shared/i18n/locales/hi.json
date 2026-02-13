@@ -61,6 +61,7 @@
 	"detail_sunrise": "सूर्योदय",
 	"detail_temperature": "तापमान",
 	"detail_precipitation": "वर्षा",
+	"detail_high_low": "उच्च / निम्न",
 	"detail_sunset": "सूर्यास्त",
 	"credits_weather_data": "मौसम डेटा प्रदाता ",
 	"cardinal_directions": ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"],

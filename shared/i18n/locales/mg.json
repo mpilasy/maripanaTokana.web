@@ -61,6 +61,7 @@
 	"detail_uv_index": "Tahan'ny UV",
 	"detail_visibility": "Tazana",
 	"detail_sunrise": "\uD83C\uDF1E Miposaka",
+	"detail_high_low": "Avo / Iva",
 	"detail_sunset": "\uD83C\uDF1E Mody",
 	"credits_weather_data": "Fankasitrahana:",
 	"cardinal_directions": ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"],

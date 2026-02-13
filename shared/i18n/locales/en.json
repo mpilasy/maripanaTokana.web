@@ -61,6 +61,7 @@
 	"detail_uv_index": "UV Index",
 	"detail_visibility": "Visibility",
 	"detail_sunrise": "Sunrise",
+	"detail_high_low": "High / Low",
 	"detail_sunset": "Sunset",
 	"credits_weather_data": "Weather data by ",
 	"cardinal_directions": ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"],

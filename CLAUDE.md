@@ -5,7 +5,7 @@
 - **Weather API:** [Open-Meteo](https://open-meteo.com) — free, no API key
 - **Reverse Geocoding:** [Nominatim](https://nominatim.openstreetmap.org) — free, no API key
 - **Screenshots:** `html2canvas` — captures DOM sections, composites onto branded canvas, shares via Web Share API
-- **i18n:** 8 languages (mg, ar, en, es, fr, hi, ne, zh) with ~75 keys + 2 arrays (`cardinal_directions`, `uv_labels`). Default: Malagasy (mg, index 0).
+- **i18n:** 8 languages (mg, ar, en, es, fr, hi, ne, zh) with ~76 keys + 2 arrays (`cardinal_directions`, `uv_labels`). Default: Malagasy (mg, index 0).
 
 ## Project Layout
 ```
@@ -67,7 +67,8 @@ All three implementations share the same feature set:
 - **RTL Support:** `document.documentElement.dir = 'rtl'` when locale is `ar`, `ltr` otherwise. Footer forced LTR via `dir="ltr"`.
 - **Two-Step Location:** Cached coords from localStorage → fresh `navigator.geolocation` → re-fetch if moved >0.045° (~5 km).
 - **Auto-refresh:** `visibilitychange` event triggers refresh if data >30 min old.
-- **Pull-to-Refresh:** Touch event handling on scroll container (touchstart/touchmove/touchend).
+- **Pull-to-Refresh:** Touch event handling on scroll container (touchstart/touchmove/touchend). Also click "Last updated" timestamp to refresh.
+- **Current Conditions Grid:** 3 full-width merged cards at top (High/Low, Wind/Gust, Sunrise/Sunset) followed by 2-column detail cards (Temperature, Precipitation, Pressure, Humidity, UV, Visibility).
 - **Screenshot Sharing:** `html2canvas` captures header and content, composites onto branded canvas with `#0E0B3D` background and copyright watermark. Uses `navigator.share({ files })` with PNG download fallback. Share buttons on HeroCard and each CollapsibleSection.
 - **Service Worker:** NetworkFirst for same-origin requests, CacheFirst for Google Fonts. `skipWaiting()` + `clients.claim()`. No precaching — cache populates naturally.
 - **Collapsible Sections:** Animated expand/collapse with chevron rotation. Share button next to section title.

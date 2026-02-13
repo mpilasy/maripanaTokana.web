@@ -61,6 +61,7 @@
 	"detail_sunrise": "Amanecer",
 	"detail_temperature": "Temperatura",
 	"detail_precipitation": "Precipitación",
+	"detail_high_low": "Máx / Mín",
 	"detail_sunset": "Atardecer",
 	"credits_weather_data": "Datos meteorologicos de ",
 	"cardinal_directions": ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"],

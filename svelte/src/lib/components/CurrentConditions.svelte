@@ -2,7 +2,6 @@
 	import { _ } from 'svelte-i18n';
 	import type { WeatherData } from '$shared/domain/weatherData';
 	import DetailCard from './DetailCard.svelte';
-	import DualUnitText from './DualUnitText.svelte';
 
 	interface Props {
 		data: WeatherData;
@@ -55,6 +54,52 @@
 </script>
 
 <div class="conditions-grid">
+	<!-- High / Low merged card -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="detail-card merged-card highlow-card" onclick={onToggleUnits}>
+		<span class="highlow-arrow">↓</span>
+		<span class="merged-values">
+			<span class="merged-primary">{loc(minDual[0])}</span>
+			<span class="merged-secondary">{loc(minDual[1])}</span>
+		</span>
+		<span class="merged-label">{$_('detail_high_low')}</span>
+		<span class="merged-values merged-values-end">
+			<span class="merged-primary">{loc(maxDual[0])}</span>
+			<span class="merged-secondary">{loc(maxDual[1])}</span>
+		</span>
+		<span class="highlow-arrow">↑</span>
+	</div>
+
+	<!-- Wind merged card -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="detail-card merged-card wind-merged-card" onclick={onToggleUnits}>
+		<div class="wind-side">
+			<span class="merged-values">
+				<span class="merged-primary">{loc(windDual[0])}</span>
+				<span class="merged-secondary">{loc(windDual[1])}</span>
+			</span>
+			<span class="wind-subtitle">{loc(`${getCardinalDirection(data.windDeg)} (${data.windDeg}°)`)}</span>
+		</div>
+		<span class="merged-label">{$_('detail_wind')}</span>
+		<div class="wind-side wind-side-end">
+			{#if gustDual}
+				<span class="merged-values merged-values-end">
+					<span class="merged-primary">{loc(gustDual[0])}</span>
+					<span class="merged-secondary">{loc(gustDual[1])}</span>
+				</span>
+			{/if}
+		</div>
+	</div>
+
+	<!-- Sunrise / Sunset merged card -->
+	<div class="detail-card merged-card sun-card">
+		<span class="sun-time">{loc(formatTime(data.sunrise))}</span>
+		<span class="sun-icon">☀️</span>
+		<span class="sun-time">{loc(formatTime(data.sunset))}</span>
+	</div>
+
 	<!-- Temperature Now + Feels Like -->
 	<div class="detail-card temp-now-card">
 		<span class="card-title">{$_('detail_temperature')}</span>
@@ -97,37 +142,6 @@
 	{/if}
 
 	<DetailCard
-		title={"\u2193 " + $_('detail_min_temp')}
-		value={loc(minDual[0])}
-		secondaryValue={loc(minDual[1])}
-		{onToggleUnits}
-	/>
-	<DetailCard
-		title={"\u2191 " + $_('detail_max_temp')}
-		value={loc(maxDual[0])}
-		secondaryValue={loc(maxDual[1])}
-		{onToggleUnits}
-	/>
-
-	<DetailCard
-		title={$_('detail_wind')}
-		value={loc(windDual[0])}
-		secondaryValue={loc(windDual[1])}
-		subtitle={loc(`${getCardinalDirection(data.windDeg)} (${data.windDeg}°)`)}
-		{onToggleUnits}
-	/>
-	{#if gustDual}
-		<DetailCard
-			title={$_('detail_wind_gust')}
-			value={loc(gustDual[0])}
-			secondaryValue={loc(gustDual[1])}
-			{onToggleUnits}
-		/>
-	{:else}
-		<div class="detail-card-placeholder"></div>
-	{/if}
-
-	<DetailCard
 		title={$_('detail_pressure')}
 		value={loc(pressDual[0])}
 		secondaryValue={loc(pressDual[1])}
@@ -157,15 +171,6 @@
 		secondaryValue={loc(visDual[1])}
 		{onToggleUnits}
 	/>
-
-	<DetailCard
-		title={$_('detail_sunrise')}
-		value={loc(formatTime(data.sunrise))}
-	/>
-	<DetailCard
-		title={$_('detail_sunset')}
-		value={loc(formatTime(data.sunset))}
-	/>
 </div>
 
 <style>
@@ -176,7 +181,84 @@
 		gap: 16px;
 	}
 
-	.detail-card-placeholder {
+	.merged-card {
+		grid-column: 1 / -1;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		cursor: pointer;
+	}
+
+	.merged-label {
+		font-size: 12px;
+		color: rgba(255,255,255,0.5);
+		text-align: center;
+	}
+
+	.merged-values {
+		display: flex;
+		align-items: baseline;
+		gap: 4px;
+	}
+
+	.merged-values-end {
+		justify-content: flex-end;
+	}
+
+	.merged-primary {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 700;
+		color: white;
+		font-feature-settings: var(--font-features);
+	}
+
+	.merged-secondary {
+		font-family: var(--font-display);
+		font-size: 12px;
+		color: rgba(255,255,255,0.55);
+		font-feature-settings: var(--font-features);
+	}
+
+	.highlow-arrow {
+		font-size: 24px;
+		color: rgba(255,255,255,0.7);
+	}
+
+	.wind-merged-card {
+		cursor: pointer;
+	}
+
+	.wind-side {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	.wind-side-end {
+		align-items: flex-end;
+	}
+
+	.wind-subtitle {
+		font-size: 12px;
+		color: rgba(255,255,255,0.6);
+	}
+
+	.sun-card {
+		cursor: default;
+	}
+
+	.sun-time {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 700;
+		color: white;
+		font-feature-settings: var(--font-features);
+	}
+
+	.sun-icon {
+		font-size: 24px;
 	}
 
 	.temp-now-card {
