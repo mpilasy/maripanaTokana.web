@@ -57,7 +57,7 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 	return (
 		<div className="conditions-grid">
 			{/* High / Low merged card */}
-			<div className="detail-card merged-card highlow-card" onClick={onToggleUnits}>
+			<div className="merged-card highlow-card" onClick={onToggleUnits}>
 				<span className="highlow-arrow">↓</span>
 				<span className="merged-values">
 					<span className="merged-primary">{loc(minDual[0])}</span>
@@ -72,7 +72,7 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 			</div>
 
 			{/* Wind merged card */}
-			<div className="detail-card merged-card wind-merged-card" onClick={onToggleUnits}>
+			<div className="merged-card wind-merged-card" onClick={onToggleUnits}>
 				<div className="wind-side">
 					<span className="merged-values">
 						<span className="merged-primary">{loc(windDual[0])}</span>
@@ -92,7 +92,7 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 			</div>
 
 			{/* Sunrise / Sunset merged card */}
-			<div className="detail-card merged-card sun-card">
+			<div className="merged-card sun-card">
 				<span className="sun-time">{loc(formatTime(data.sunrise))}</span>
 				<span className="sun-icon">☀️</span>
 				<span className="sun-time">{loc(formatTime(data.sunset))}</span>

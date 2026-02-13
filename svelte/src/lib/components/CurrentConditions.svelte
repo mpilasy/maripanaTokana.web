@@ -57,7 +57,7 @@
 	<!-- High / Low merged card -->
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="detail-card merged-card highlow-card" onclick={onToggleUnits}>
+	<div class="merged-card highlow-card" onclick={onToggleUnits}>
 		<span class="highlow-arrow">↓</span>
 		<span class="merged-values">
 			<span class="merged-primary">{loc(minDual[0])}</span>
@@ -74,7 +74,7 @@
 	<!-- Wind merged card -->
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="detail-card merged-card wind-merged-card" onclick={onToggleUnits}>
+	<div class="merged-card wind-merged-card" onclick={onToggleUnits}>
 		<div class="wind-side">
 			<span class="merged-values">
 				<span class="merged-primary">{loc(windDual[0])}</span>
@@ -94,7 +94,7 @@
 	</div>
 
 	<!-- Sunrise / Sunset merged card -->
-	<div class="detail-card merged-card sun-card">
+	<div class="merged-card sun-card">
 		<span class="sun-time">{loc(formatTime(data.sunrise))}</span>
 		<span class="sun-icon">☀️</span>
 		<span class="sun-time">{loc(formatTime(data.sunset))}</span>
@@ -182,8 +182,13 @@
 	}
 
 	.merged-card {
-		grid-column: 1 / -1;
+		background: rgba(42, 31, 165, 0.6);
+		border-radius: 16px;
+		padding: 16px;
+		display: flex;
 		flex-direction: row;
+		gap: 8px;
+		grid-column: 1 / -1;
 		align-items: center;
 		justify-content: space-between;
 		cursor: pointer;
