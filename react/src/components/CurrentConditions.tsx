@@ -83,19 +83,28 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 				<span className="merged-label">{t('detail_wind')}</span>
 				<div className="wind-side wind-side-end">
 					{gustDual && (
-						<span className="merged-values merged-values-end">
-							<span className="merged-primary">{loc(gustDual[0])}</span>
-							<span className="merged-secondary">{loc(gustDual[1])}</span>
-						</span>
+						<>
+							<span className="merged-values merged-values-end">
+								<span className="merged-primary">{loc(gustDual[0])}</span>
+								<span className="merged-secondary">{loc(gustDual[1])}</span>
+							</span>
+							<span className="wind-subtitle">{t('detail_wind_gust')}</span>
+						</>
 					)}
 				</div>
 			</div>
 
 			{/* Sunrise / Sunset merged card */}
 			<div className="merged-card sun-card">
-				<span className="sun-time">{loc(formatTime(data.sunrise))}</span>
+				<div className="sun-side">
+					<span className="sun-time">{loc(formatTime(data.sunrise))}</span>
+					<span className="sun-label">{t('detail_sunrise')}</span>
+				</div>
 				<span className="sun-icon">☀️</span>
-				<span className="sun-time">{loc(formatTime(data.sunset))}</span>
+				<div className="sun-side sun-side-end">
+					<span className="sun-time">{loc(formatTime(data.sunset))}</span>
+					<span className="sun-label">{t('detail_sunset')}</span>
+				</div>
 			</div>
 
 			{/* Temperature Now + Feels Like */}

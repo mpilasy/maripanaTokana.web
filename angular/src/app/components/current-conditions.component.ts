@@ -40,15 +40,22 @@ import { DetailCardComponent } from './detail-card.component';
 							<span class="merged-primary">{{ gustDual()![0] }}</span>
 							<span class="merged-secondary">{{ gustDual()![1] }}</span>
 						</span>
+						<span class="wind-subtitle">{{ i18n.t('detail_wind_gust') }}</span>
 					}
 				</div>
 			</div>
 
 			<!-- Sunrise / Sunset merged card -->
 			<div class="merged-card sun-card">
-				<span class="sun-time">{{ loc()(formatTime(data().sunrise)) }}</span>
+				<div class="sun-side">
+					<span class="sun-time">{{ loc()(formatTime(data().sunrise)) }}</span>
+					<span class="sun-label">{{ i18n.t('detail_sunrise') }}</span>
+				</div>
 				<span class="sun-icon">☀️</span>
-				<span class="sun-time">{{ loc()(formatTime(data().sunset)) }}</span>
+				<div class="sun-side sun-side-end">
+					<span class="sun-time">{{ loc()(formatTime(data().sunset)) }}</span>
+					<span class="sun-label">{{ i18n.t('detail_sunset') }}</span>
+				</div>
 			</div>
 
 			<div class="temp-now-card">
@@ -92,14 +99,17 @@ import { DetailCardComponent } from './detail-card.component';
 		.merged-label { font-size: 12px; color: rgba(255,255,255,0.5); text-align: center; }
 		.merged-values { display: flex; align-items: baseline; gap: 4px; }
 		.merged-values-end { justify-content: flex-end; }
-		.merged-primary { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
+		.merged-primary { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
 		.merged-secondary { font-family: var(--font-display); font-size: 12px; color: rgba(255,255,255,0.55); font-feature-settings: var(--font-features); }
 		.highlow-arrow { font-size: 24px; color: rgba(255,255,255,0.7); }
 		.wind-side { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 		.wind-side-end { align-items: flex-end; }
 		.wind-subtitle { font-size: 12px; color: rgba(255,255,255,0.6); }
 		.sun-card { cursor: default; }
-		.sun-time { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
+		.sun-side { display: flex; flex-direction: column; gap: 2px; }
+		.sun-side-end { align-items: flex-end; }
+		.sun-time { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
+		.sun-label { font-size: 12px; color: rgba(255,255,255,0.6); }
 		.sun-icon { font-size: 24px; }
 		.temp-now-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 		.temp-now-values { cursor: pointer; }

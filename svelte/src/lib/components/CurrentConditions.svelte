@@ -89,15 +89,22 @@
 					<span class="merged-primary">{loc(gustDual[0])}</span>
 					<span class="merged-secondary">{loc(gustDual[1])}</span>
 				</span>
+				<span class="wind-subtitle">{$_('detail_wind_gust')}</span>
 			{/if}
 		</div>
 	</div>
 
 	<!-- Sunrise / Sunset merged card -->
 	<div class="merged-card sun-card">
-		<span class="sun-time">{loc(formatTime(data.sunrise))}</span>
+		<div class="sun-side">
+			<span class="sun-time">{loc(formatTime(data.sunrise))}</span>
+			<span class="sun-label">{$_('detail_sunrise')}</span>
+		</div>
 		<span class="sun-icon">☀️</span>
-		<span class="sun-time">{loc(formatTime(data.sunset))}</span>
+		<div class="sun-side sun-side-end">
+			<span class="sun-time">{loc(formatTime(data.sunset))}</span>
+			<span class="sun-label">{$_('detail_sunset')}</span>
+		</div>
 	</div>
 
 	<!-- Temperature Now + Feels Like -->
@@ -212,7 +219,7 @@
 
 	.merged-primary {
 		font-family: var(--font-display);
-		font-size: 16px;
+		font-size: 18px;
 		font-weight: 700;
 		color: white;
 		font-feature-settings: var(--font-features);
@@ -254,12 +261,27 @@
 		cursor: default;
 	}
 
+	.sun-side {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.sun-side-end {
+		align-items: flex-end;
+	}
+
 	.sun-time {
 		font-family: var(--font-display);
-		font-size: 16px;
+		font-size: 18px;
 		font-weight: 700;
 		color: white;
 		font-feature-settings: var(--font-features);
+	}
+
+	.sun-label {
+		font-size: 12px;
+		color: rgba(255,255,255,0.6);
 	}
 
 	.sun-icon {
