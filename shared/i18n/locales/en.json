@@ -49,6 +49,8 @@
 	"section_current_conditions": "Current Conditions",
 	"section_hourly_forecast": "Hourly Forecast",
 	"section_this_week": "10-Day Forecast",
+	"detail_temperature": "Temperature",
+	"detail_precipitation": "Precipitation",
 	"detail_min_temp": "Min Temp",
 	"detail_max_temp": "Max Temp",
 	"detail_wind": "Wind",

@@ -2,6 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import type { WeatherData } from '$shared/domain/weatherData';
 	import DetailCard from './DetailCard.svelte';
+	import DualUnitText from './DualUnitText.svelte';
 
 	interface Props {
 		data: WeatherData;
@@ -42,6 +43,8 @@
 			: [`${mi} mi`, `${km} km`];
 	}
 
+	let tempDual = $derived(data.temperature.displayDual(metricPrimary));
+	let feelsLikeDual = $derived(data.feelsLike.displayDual(metricPrimary));
 	let minDual = $derived(data.tempMin.displayDual(metricPrimary));
 	let maxDual = $derived(data.tempMax.displayDual(metricPrimary));
 	let windDual = $derived(data.windSpeed.displayDual(metricPrimary));
@@ -52,6 +55,47 @@
 </script>
 
 <div class="conditions-grid">
+	<!-- Temperature Now + Feels Like -->
+	<div class="detail-card temp-now-card">
+		<span class="card-title">{$_('detail_temperature')}</span>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<span class="temp-now-values" onclick={onToggleUnits}>
+			<span class="card-value">{loc(tempDual[0])}</span>
+			<span class="temp-now-secondary">{loc(tempDual[1])}</span>
+		</span>
+		<span class="feels-label">{$_('feels_like')}</span>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<span class="feels-values" onclick={onToggleUnits}>
+			<span class="feels-primary">{loc(feelsLikeDual[0])}</span>
+			<span class="feels-secondary">{loc(feelsLikeDual[1])}</span>
+		</span>
+	</div>
+	<!-- Precipitation -->
+	{#if data.snow}
+		{@const [snowP, snowS] = data.snow.displayDual(metricPrimary)}
+		<DetailCard
+			title={$_('detail_precipitation')}
+			value={"\u2744\uFE0F " + loc(snowP)}
+			secondaryValue={loc(snowS)}
+			{onToggleUnits}
+		/>
+	{:else if data.rain}
+		{@const [rainP, rainS] = data.rain.displayDual(metricPrimary)}
+		<DetailCard
+			title={$_('detail_precipitation')}
+			value={"\uD83C\uDF27\uFE0F " + loc(rainP)}
+			secondaryValue={loc(rainS)}
+			{onToggleUnits}
+		/>
+	{:else}
+		<DetailCard
+			title={$_('detail_precipitation')}
+			value={$_('no_precip')}
+		/>
+	{/if}
+
 	<DetailCard
 		title={"\u2193 " + $_('detail_min_temp')}
 		value={loc(minDual[0])}
@@ -133,6 +177,50 @@
 	}
 
 	.detail-card-placeholder {
+	}
+
+	.temp-now-card {
+		background: rgba(42, 31, 165, 0.6);
+		border-radius: 16px;
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		flex: 1;
+	}
+
+	.temp-now-values {
+		cursor: pointer;
+	}
+
+	.temp-now-secondary {
+		font-family: var(--font-display);
+		font-size: 14px;
+		color: rgba(255,255,255,0.55);
+		margin-left: 4px;
+	}
+
+	.feels-label {
+		font-size: 12px;
+		color: rgba(255,255,255,0.5);
+	}
+
+	.feels-values {
+		cursor: pointer;
+	}
+
+	.feels-primary {
+		font-family: var(--font-display);
+		font-size: 13px;
+		font-weight: 700;
+		color: white;
+	}
+
+	.feels-secondary {
+		font-family: var(--font-display);
+		font-size: 12px;
+		color: rgba(255,255,255,0.55);
+		margin-left: 4px;
 	}
 
 	.humidity-card {

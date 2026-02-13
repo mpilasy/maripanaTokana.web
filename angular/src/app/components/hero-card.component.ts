@@ -39,6 +39,16 @@ import { DualUnitTextComponent } from './dual-unit-text.component';
 					}
 				</div>
 			</div>
+			<div class="hero-extra">
+				<div class="hero-highlow">
+					<app-dual-unit-text [primary]="'\\u2191 ' + maxDual()[0]" [secondary]="maxDual()[1]" (onClick)="onToggleUnits.emit()" />
+					<app-dual-unit-text [primary]="'\\u2193 ' + minDual()[0]" [secondary]="minDual()[1]" (onClick)="onToggleUnits.emit()" />
+				</div>
+				<div class="hero-wind">
+					<app-dual-unit-text [primary]="windDual()[0]" [secondary]="windDual()[1]" align="end" (onClick)="onToggleUnits.emit()" />
+					<span class="wind-direction">{{ windCardinal() }}</span>
+				</div>
+			</div>
 			<div class="copyright">&copy; Orinasa Njarasoa</div>
 		</div>
 	`,
@@ -55,6 +65,10 @@ import { DualUnitTextComponent } from './dual-unit-text.component';
 		.label { font-size: 14px; color: rgba(255,255,255,0.7); display: block; margin-bottom: 2px; }
 		.hero-precip { text-align: end; }
 		.no-precip { font-size: 14px; color: rgba(255,255,255,0.5); }
+		.hero-extra { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 12px; }
+		.hero-highlow { display: flex; flex-direction: column; gap: 2px; }
+		.hero-wind { text-align: end; }
+		.wind-direction { font-size: 12px; color: rgba(255,255,255,0.6); }
 		.copyright { text-align: center; font-size: 9px; color: rgba(255,255,255,0.2); margin-top: 7px; }
 	`,
 })
@@ -94,6 +108,25 @@ export class HeroCardComponent {
 		if (!rain) return null;
 		const [a, b] = rain.displayDual(this.metricPrimary());
 		return [this.loc()(a), this.loc()(b)];
+	});
+	maxDual = computed(() => {
+		const [a, b] = this.data().tempMax.displayDual(this.metricPrimary());
+		return [this.loc()(a), this.loc()(b)];
+	});
+	minDual = computed(() => {
+		const [a, b] = this.data().tempMin.displayDual(this.metricPrimary());
+		return [this.loc()(a), this.loc()(b)];
+	});
+	windDual = computed(() => {
+		const [a, b] = this.data().windSpeed.displayDual(this.metricPrimary());
+		return [this.loc()(a), this.loc()(b)];
+	});
+	windCardinal = computed(() => {
+		const dirs = this.i18n.tArray('cardinal_directions');
+		if (dirs.length === 0) return '';
+		const deg = this.data().windDeg;
+		const idx = ((deg % 360 + 360) % 360 * 16 / 360) % 16;
+		return this.loc()(dirs[Math.round(idx)] ?? '');
 	});
 
 	handleShare(e: MouseEvent) {

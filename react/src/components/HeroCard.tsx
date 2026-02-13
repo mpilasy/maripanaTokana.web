@@ -29,6 +29,16 @@ export default function HeroCard({ data, metricPrimary, loc, onToggleUnits, onSh
 
 	const snowDual = data.snow?.displayDual(metricPrimary);
 	const rainDual = data.rain?.displayDual(metricPrimary);
+	const maxDual = data.tempMax.displayDual(metricPrimary);
+	const minDual = data.tempMin.displayDual(metricPrimary);
+	const windDual = data.windSpeed.displayDual(metricPrimary);
+
+	function getCardinalDirection(deg: number): string {
+		const dirs = t('cardinal_directions') as unknown as string[];
+		if (!Array.isArray(dirs)) return '';
+		const idx = ((deg % 360 + 360) % 360 * 16 / 360) % 16;
+		return dirs[Math.round(idx)] ?? '';
+	}
 
 	return (
 		<div className="hero-card" ref={cardRef}>
@@ -83,6 +93,30 @@ export default function HeroCard({ data, metricPrimary, loc, onToggleUnits, onSh
 					) : (
 						<span className="no-precip">{t('no_precip')}</span>
 					)}
+				</div>
+			</div>
+
+			<div className="hero-extra">
+				<div className="hero-highlow">
+					<DualUnitText
+						primary={"\u2191 " + loc(maxDual[0])}
+						secondary={loc(maxDual[1])}
+						onClick={onToggleUnits}
+					/>
+					<DualUnitText
+						primary={"\u2193 " + loc(minDual[0])}
+						secondary={loc(minDual[1])}
+						onClick={onToggleUnits}
+					/>
+				</div>
+				<div className="hero-wind">
+					<DualUnitText
+						primary={loc(windDual[0])}
+						secondary={loc(windDual[1])}
+						align="end"
+						onClick={onToggleUnits}
+					/>
+					<span className="wind-direction">{loc(getCardinalDirection(data.windDeg))}</span>
 				</div>
 			</div>
 

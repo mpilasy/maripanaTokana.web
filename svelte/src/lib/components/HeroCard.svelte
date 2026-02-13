@@ -21,6 +21,16 @@
 	let description = $derived($_( wmoDescriptionKey(data.weatherCode)));
 	let tempDual = $derived(data.temperature.displayDualMixed(metricPrimary));
 	let feelsLikeDual = $derived(data.feelsLike.displayDual(metricPrimary));
+	let maxDual = $derived(data.tempMax.displayDual(metricPrimary));
+	let minDual = $derived(data.tempMin.displayDual(metricPrimary));
+	let windDual = $derived(data.windSpeed.displayDual(metricPrimary));
+
+	function getCardinalDirection(deg: number): string {
+		const dirs: string[] = $_('cardinal_directions') as unknown as string[];
+		if (!Array.isArray(dirs)) return '';
+		const idx = ((deg % 360 + 360) % 360 * 16 / 360) % 16;
+		return dirs[Math.round(idx)] ?? '';
+	}
 
 	function handleShare(e: MouseEvent) {
 		e.stopPropagation();
@@ -84,6 +94,30 @@
 			{:else}
 				<span class="no-precip">{$_('no_precip')}</span>
 			{/if}
+		</div>
+	</div>
+
+	<div class="hero-extra">
+		<div class="hero-highlow">
+			<DualUnitText
+				primary={"\u2191 " + loc(maxDual[0])}
+				secondary={loc(maxDual[1])}
+				onClick={onToggleUnits}
+			/>
+			<DualUnitText
+				primary={"\u2193 " + loc(minDual[0])}
+				secondary={loc(minDual[1])}
+				onClick={onToggleUnits}
+			/>
+		</div>
+		<div class="hero-wind">
+			<DualUnitText
+				primary={loc(windDual[0])}
+				secondary={loc(windDual[1])}
+				align="end"
+				onClick={onToggleUnits}
+			/>
+			<span class="wind-direction">{loc(getCardinalDirection(data.windDeg))}</span>
 		</div>
 	</div>
 
@@ -172,6 +206,28 @@
 	.no-precip {
 		font-size: 14px;
 		color: rgba(255,255,255,0.5);
+	}
+
+	.hero-extra {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		margin-top: 12px;
+	}
+
+	.hero-highlow {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.hero-wind {
+		text-align: end;
+	}
+
+	.wind-direction {
+		font-size: 12px;
+		color: rgba(255,255,255,0.6);
 	}
 
 	.copyright {

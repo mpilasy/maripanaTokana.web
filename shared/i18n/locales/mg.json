@@ -1,7 +1,7 @@
 {
 	"app_name": "maripànaTokana",
 	"loading": "Mahareta…",
-	"wmo_clear_sky": "Lanitra manga",
+	"wmo_clear_sky": "Manga ny lanitra",
 	"wmo_mainly_clear": "Mazavazava ny lanitra",
 	"wmo_partly_cloudy": "Misy rahona",
 	"wmo_overcast": "Sembanindrahona",
@@ -49,6 +49,8 @@
 	"section_current_conditions": "Izao",
 	"section_hourly_forecast": "Isan'ora",
 	"section_this_week": "Ny folo andro manaraka",
+	"detail_temperature": "Hafanana",
+	"detail_precipitation": "Orana",
 	"detail_min_temp": "Iva Indrindra",
 	"detail_max_temp": "Avo Indrindra",
 	"detail_wind": "Rivotra",

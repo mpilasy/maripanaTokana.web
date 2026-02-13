@@ -42,6 +42,10 @@ function visibilityDisplay(meters: number, metric: boolean): [string, string] {
 export default function CurrentConditions({ data, metricPrimary, loc, onToggleUnits }: CurrentConditionsProps) {
 	const { t } = useTranslation();
 
+	const tempDual = data.temperature.displayDual(metricPrimary);
+	const feelsLikeDual = data.feelsLike.displayDual(metricPrimary);
+	const snowDual = data.snow?.displayDual(metricPrimary);
+	const rainDual = data.rain?.displayDual(metricPrimary);
 	const minDual = data.tempMin.displayDual(metricPrimary);
 	const maxDual = data.tempMax.displayDual(metricPrimary);
 	const windDual = data.windSpeed.displayDual(metricPrimary);
@@ -52,6 +56,41 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 
 	return (
 		<div className="conditions-grid">
+			{/* Temperature Now + Feels Like */}
+			<div className="detail-card temp-now-card">
+				<span className="detail-card-title">{t('detail_temperature')}</span>
+				<span className="temp-now-values" onClick={onToggleUnits}>
+					<span className="detail-card-value">{loc(tempDual[0])}</span>
+					<span className="temp-now-secondary">{loc(tempDual[1])}</span>
+				</span>
+				<span className="feels-label">{t('feels_like')}</span>
+				<span className="feels-values" onClick={onToggleUnits}>
+					<span className="feels-primary">{loc(feelsLikeDual[0])}</span>
+					<span className="feels-secondary">{loc(feelsLikeDual[1])}</span>
+				</span>
+			</div>
+			{/* Precipitation */}
+			{snowDual ? (
+				<DetailCard
+					title={t('detail_precipitation')}
+					value={"\u2744\uFE0F " + loc(snowDual[0])}
+					secondaryValue={loc(snowDual[1])}
+					onToggleUnits={onToggleUnits}
+				/>
+			) : rainDual ? (
+				<DetailCard
+					title={t('detail_precipitation')}
+					value={"\uD83C\uDF27\uFE0F " + loc(rainDual[0])}
+					secondaryValue={loc(rainDual[1])}
+					onToggleUnits={onToggleUnits}
+				/>
+			) : (
+				<DetailCard
+					title={t('detail_precipitation')}
+					value={t('no_precip')}
+				/>
+			)}
+
 			<DetailCard
 				title={"\u2193 " + t('detail_min_temp')}
 				value={loc(minDual[0])}

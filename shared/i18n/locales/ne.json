@@ -59,6 +59,8 @@
 	"detail_uv_index": "UV सूचकाङ्क",
 	"detail_visibility": "दृश्यता",
 	"detail_sunrise": "सूर्योदय",
+	"detail_temperature": "तापक्रम",
+	"detail_precipitation": "वर्षा",
 	"detail_sunset": "सूर्यास्त",
 	"credits_weather_data": "मौसम डाटा प्रदायक: ",
 	"cardinal_directions": ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"],

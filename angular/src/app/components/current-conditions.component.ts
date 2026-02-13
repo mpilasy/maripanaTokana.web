@@ -9,6 +9,26 @@ import { DetailCardComponent } from './detail-card.component';
 	imports: [DetailCardComponent],
 	template: `
 		<div class="conditions-grid">
+			<div class="temp-now-card">
+				<span class="card-title">{{ i18n.t('detail_temperature') }}</span>
+				<span class="temp-now-values" (click)="onToggleUnits.emit()">
+					<span class="card-value">{{ tempDual()[0] }}</span>
+					<span class="temp-now-secondary">{{ tempDual()[1] }}</span>
+				</span>
+				<span class="feels-label">{{ i18n.t('feels_like') }}</span>
+				<span class="feels-values" (click)="onToggleUnits.emit()">
+					<span class="feels-primary">{{ feelsLikeDual()[0] }}</span>
+					<span class="feels-secondary">{{ feelsLikeDual()[1] }}</span>
+				</span>
+			</div>
+			@if (snowDual()) {
+				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="'\\u2744\\uFE0F ' + snowDual()![0]" [secondaryValue]="snowDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
+			} @else if (rainDual()) {
+				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="'\\uD83C\\uDF27\\uFE0F ' + rainDual()![0]" [secondaryValue]="rainDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
+			} @else {
+				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="i18n.t('no_precip')" />
+			}
+
 			<app-detail-card [title]="'↓ ' + i18n.t('detail_min_temp')" [value]="minDual()[0]" [secondaryValue]="minDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
 			<app-detail-card [title]="'↑ ' + i18n.t('detail_max_temp')" [value]="maxDual()[0]" [secondaryValue]="maxDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
 
@@ -40,6 +60,13 @@ import { DetailCardComponent } from './detail-card.component';
 	styles: `
 		.conditions-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 16px; }
 		.placeholder { }
+		.temp-now-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+		.temp-now-values { cursor: pointer; }
+		.temp-now-secondary { font-family: var(--font-display); font-size: 14px; color: rgba(255,255,255,0.55); margin-left: 4px; }
+		.feels-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+		.feels-values { cursor: pointer; }
+		.feels-primary { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: white; }
+		.feels-secondary { font-family: var(--font-display); font-size: 12px; color: rgba(255,255,255,0.55); margin-left: 4px; }
 		.humidity-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 		.card-title { font-size: 14px; color: rgba(255,255,255,0.7); }
 		.card-value { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
@@ -57,6 +84,10 @@ export class CurrentConditionsComponent {
 	loc = input.required<(s: string) => string>();
 	onToggleUnits = output<void>();
 
+	tempDual = computed(() => { const [a, b] = this.data().temperature.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
+	feelsLikeDual = computed(() => { const [a, b] = this.data().feelsLike.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
+	snowDual = computed(() => { const s = this.data().snow; if (!s) return null; const [a, b] = s.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
+	rainDual = computed(() => { const r = this.data().rain; if (!r) return null; const [a, b] = r.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
 	minDual = computed(() => { const [a, b] = this.data().tempMin.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
 	maxDual = computed(() => { const [a, b] = this.data().tempMax.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
 	windDual = computed(() => { const [a, b] = this.data().windSpeed.displayDual(this.metricPrimary()); return [this.loc()(a), this.loc()(b)]; });
