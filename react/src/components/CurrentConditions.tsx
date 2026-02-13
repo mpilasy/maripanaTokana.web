@@ -107,40 +107,39 @@ export default function CurrentConditions({ data, metricPrimary, loc, onToggleUn
 				</div>
 			</div>
 
-			{/* Temperature Now + Feels Like */}
-			<div className="detail-card temp-now-card">
-				<span className="detail-card-title">{t('detail_temperature')}</span>
-				<span className="temp-now-values" onClick={onToggleUnits}>
-					<span className="detail-card-value">{loc(tempDual[0])}</span>
-					<span className="temp-now-secondary">{loc(tempDual[1])}</span>
-				</span>
-				<span className="feels-label">{t('feels_like')}</span>
-				<span className="feels-values" onClick={onToggleUnits}>
-					<span className="feels-primary">{loc(feelsLikeDual[0])}</span>
-					<span className="feels-secondary">{loc(feelsLikeDual[1])}</span>
-				</span>
+			{/* Temperature + Precipitation merged card */}
+			<div className="merged-card temp-precip-card" onClick={onToggleUnits}>
+				<div className="tp-side">
+					<span className="detail-card-title">{t('detail_temperature')}</span>
+					<span className="tp-values">
+						<span className="tp-primary">{loc(tempDual[0])}</span>
+						<span className="tp-secondary">{loc(tempDual[1])}</span>
+					</span>
+					<span className="feels-label">{t('feels_like')}</span>
+					<span className="tp-values">
+						<span className="feels-primary">{loc(feelsLikeDual[0])}</span>
+						<span className="feels-secondary">{loc(feelsLikeDual[1])}</span>
+					</span>
+				</div>
+				<div className="tp-side tp-side-end">
+					<span className="detail-card-title">{t('detail_precipitation')}</span>
+					{snowDual ? (
+						<span className="tp-values tp-values-end">
+							<span className="tp-primary">{"\u2744\uFE0F " + loc(snowDual[0])}</span>
+							<span className="tp-secondary">{loc(snowDual[1])}</span>
+						</span>
+					) : rainDual ? (
+						<span className="tp-values tp-values-end">
+							<span className="tp-primary">{"\uD83C\uDF27\uFE0F " + loc(rainDual[0])}</span>
+							<span className="tp-secondary">{loc(rainDual[1])}</span>
+						</span>
+					) : (
+						<span className="tp-primary">{t('no_precip')}</span>
+					)}
+					<span className="feels-label">{t('detail_cloud_cover')}</span>
+					<span className="feels-primary">{loc(`${data.cloudCover}%`)}</span>
+				</div>
 			</div>
-			{/* Precipitation */}
-			{snowDual ? (
-				<DetailCard
-					title={t('detail_precipitation')}
-					value={"\u2744\uFE0F " + loc(snowDual[0])}
-					secondaryValue={loc(snowDual[1])}
-					onToggleUnits={onToggleUnits}
-				/>
-			) : rainDual ? (
-				<DetailCard
-					title={t('detail_precipitation')}
-					value={"\uD83C\uDF27\uFE0F " + loc(rainDual[0])}
-					secondaryValue={loc(rainDual[1])}
-					onToggleUnits={onToggleUnits}
-				/>
-			) : (
-				<DetailCard
-					title={t('detail_precipitation')}
-					value={t('no_precip')}
-				/>
-			)}
 
 			<DetailCard
 				title={t('detail_pressure')}

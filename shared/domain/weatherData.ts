@@ -34,6 +34,7 @@ export interface WeatherData {
 	rain: Precipitation | null;
 	snow: Precipitation | null;
 	uvIndex: number;
+	cloudCover: number; // percent 0-100
 	visibility: number; // meters
 	sunrise: number; // epoch seconds
 	sunset: number; // epoch seconds

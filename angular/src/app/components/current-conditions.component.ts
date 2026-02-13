@@ -58,25 +58,39 @@ import { DetailCardComponent } from './detail-card.component';
 				</div>
 			</div>
 
-			<div class="temp-now-card">
-				<span class="card-title">{{ i18n.t('detail_temperature') }}</span>
-				<span class="temp-now-values" (click)="onToggleUnits.emit()">
-					<span class="card-value">{{ tempDual()[0] }}</span>
-					<span class="temp-now-secondary">{{ tempDual()[1] }}</span>
-				</span>
-				<span class="feels-label">{{ i18n.t('feels_like') }}</span>
-				<span class="feels-values" (click)="onToggleUnits.emit()">
-					<span class="feels-primary">{{ feelsLikeDual()[0] }}</span>
-					<span class="feels-secondary">{{ feelsLikeDual()[1] }}</span>
-				</span>
+			<!-- Temperature + Precipitation merged card -->
+			<div class="merged-card temp-precip-card" (click)="onToggleUnits.emit()">
+				<div class="tp-side">
+					<span class="card-title">{{ i18n.t('detail_temperature') }}</span>
+					<span class="tp-values">
+						<span class="tp-primary">{{ tempDual()[0] }}</span>
+						<span class="tp-secondary">{{ tempDual()[1] }}</span>
+					</span>
+					<span class="feels-label">{{ i18n.t('feels_like') }}</span>
+					<span class="tp-values">
+						<span class="feels-primary">{{ feelsLikeDual()[0] }}</span>
+						<span class="feels-secondary">{{ feelsLikeDual()[1] }}</span>
+					</span>
+				</div>
+				<div class="tp-side tp-side-end">
+					<span class="card-title">{{ i18n.t('detail_precipitation') }}</span>
+					@if (snowDual()) {
+						<span class="tp-values tp-values-end">
+							<span class="tp-primary">{{ '\u2744\uFE0F ' + snowDual()![0] }}</span>
+							<span class="tp-secondary">{{ snowDual()![1] }}</span>
+						</span>
+					} @else if (rainDual()) {
+						<span class="tp-values tp-values-end">
+							<span class="tp-primary">{{ '\uD83C\uDF27\uFE0F ' + rainDual()![0] }}</span>
+							<span class="tp-secondary">{{ rainDual()![1] }}</span>
+						</span>
+					} @else {
+						<span class="tp-primary">{{ i18n.t('no_precip') }}</span>
+					}
+					<span class="feels-label">{{ i18n.t('detail_cloud_cover') }}</span>
+					<span class="feels-primary">{{ loc()(data().cloudCover + '%') }}</span>
+				</div>
 			</div>
-			@if (snowDual()) {
-				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="'\\u2744\\uFE0F ' + snowDual()![0]" [secondaryValue]="snowDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
-			} @else if (rainDual()) {
-				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="'\\uD83C\\uDF27\\uFE0F ' + rainDual()![0]" [secondaryValue]="rainDual()![1]" (onToggleUnits)="onToggleUnits.emit()" />
-			} @else {
-				<app-detail-card [title]="i18n.t('detail_precipitation')" [value]="i18n.t('no_precip')" />
-			}
 
 			<app-detail-card [title]="i18n.t('detail_pressure')" [value]="pressDual()[0]" [secondaryValue]="pressDual()[1]" (onToggleUnits)="onToggleUnits.emit()" />
 			<div class="humidity-card">
@@ -94,7 +108,7 @@ import { DetailCardComponent } from './detail-card.component';
 		</div>
 	`,
 	styles: `
-		.conditions-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 16px; }
+		.conditions-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 16px; }
 		.merged-card { grid-column: 1 / -1; background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
 		.merged-label { font-size: 12px; color: rgba(255,255,255,0.5); text-align: center; }
 		.merged-values { display: flex; align-items: baseline; gap: 4px; }
@@ -111,9 +125,13 @@ import { DetailCardComponent } from './detail-card.component';
 		.sun-time { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
 		.sun-label { font-size: 12px; color: rgba(255,255,255,0.6); }
 		.sun-icon { font-size: 24px; }
-		.temp-now-card { background: rgba(42,31,165,0.6); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-		.temp-now-values { cursor: pointer; }
-		.temp-now-secondary { font-family: var(--font-display); font-size: 14px; color: rgba(255,255,255,0.55); margin-left: 4px; }
+		.temp-precip-card { align-items: flex-start; }
+		.tp-side { display: flex; flex-direction: column; gap: 4px; }
+		.tp-side-end { align-items: flex-end; }
+		.tp-values { display: flex; align-items: baseline; gap: 4px; }
+		.tp-values-end { justify-content: flex-end; }
+		.tp-primary { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: white; font-feature-settings: var(--font-features); }
+		.tp-secondary { font-family: var(--font-display); font-size: 12px; color: rgba(255,255,255,0.55); font-feature-settings: var(--font-features); }
 		.feels-label { font-size: 12px; color: rgba(255,255,255,0.5); }
 		.feels-values { cursor: pointer; }
 		.feels-primary { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: white; }

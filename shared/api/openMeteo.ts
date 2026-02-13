@@ -5,7 +5,7 @@ const BASE_URL = 'https://api.open-meteo.com/v1/forecast';
 const CURRENT_PARAMS = [
 	'temperature_2m', 'apparent_temperature', 'relative_humidity_2m', 'dew_point_2m',
 	'wind_speed_10m', 'wind_direction_10m', 'wind_gusts_10m', 'pressure_msl',
-	'precipitation', 'rain', 'snowfall', 'visibility', 'weather_code', 'is_day', 'uv_index'
+	'precipitation', 'rain', 'snowfall', 'visibility', 'weather_code', 'is_day', 'uv_index', 'cloud_cover'
 ].join(',');
 
 const HOURLY_PARAMS = 'temperature_2m,weather_code,precipitation_probability';

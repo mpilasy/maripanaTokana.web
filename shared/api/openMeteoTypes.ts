@@ -20,6 +20,7 @@ export interface OpenMeteoCurrent {
 	weather_code: number;
 	is_day: number;
 	uv_index: number;
+	cloud_cover: number;
 }
 
 export interface OpenMeteoDaily {

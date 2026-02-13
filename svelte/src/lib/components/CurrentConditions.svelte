@@ -107,46 +107,43 @@
 		</div>
 	</div>
 
-	<!-- Temperature Now + Feels Like -->
-	<div class="detail-card temp-now-card">
-		<span class="card-title">{$_('detail_temperature')}</span>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<span class="temp-now-values" onclick={onToggleUnits}>
-			<span class="card-value">{loc(tempDual[0])}</span>
-			<span class="temp-now-secondary">{loc(tempDual[1])}</span>
-		</span>
-		<span class="feels-label">{$_('feels_like')}</span>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<span class="feels-values" onclick={onToggleUnits}>
-			<span class="feels-primary">{loc(feelsLikeDual[0])}</span>
-			<span class="feels-secondary">{loc(feelsLikeDual[1])}</span>
-		</span>
+	<!-- Temperature + Precipitation merged card -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="merged-card temp-precip-card" onclick={onToggleUnits}>
+		<div class="tp-side">
+			<span class="card-title">{$_('detail_temperature')}</span>
+			<span class="tp-values">
+				<span class="tp-primary">{loc(tempDual[0])}</span>
+				<span class="tp-secondary">{loc(tempDual[1])}</span>
+			</span>
+			<span class="feels-label">{$_('feels_like')}</span>
+			<span class="tp-values">
+				<span class="feels-primary">{loc(feelsLikeDual[0])}</span>
+				<span class="feels-secondary">{loc(feelsLikeDual[1])}</span>
+			</span>
+		</div>
+		<div class="tp-side tp-side-end">
+			<span class="card-title">{$_('detail_precipitation')}</span>
+			{#if data.snow}
+				{@const [snowP, snowS] = data.snow.displayDual(metricPrimary)}
+				<span class="tp-values tp-values-end">
+					<span class="tp-primary">{"\u2744\uFE0F " + loc(snowP)}</span>
+					<span class="tp-secondary">{loc(snowS)}</span>
+				</span>
+			{:else if data.rain}
+				{@const [rainP, rainS] = data.rain.displayDual(metricPrimary)}
+				<span class="tp-values tp-values-end">
+					<span class="tp-primary">{"\uD83C\uDF27\uFE0F " + loc(rainP)}</span>
+					<span class="tp-secondary">{loc(rainS)}</span>
+				</span>
+			{:else}
+				<span class="tp-primary">{$_('no_precip')}</span>
+			{/if}
+			<span class="feels-label">{$_('detail_cloud_cover')}</span>
+			<span class="feels-primary">{loc(`${data.cloudCover}%`)}</span>
+		</div>
 	</div>
-	<!-- Precipitation -->
-	{#if data.snow}
-		{@const [snowP, snowS] = data.snow.displayDual(metricPrimary)}
-		<DetailCard
-			title={$_('detail_precipitation')}
-			value={"\u2744\uFE0F " + loc(snowP)}
-			secondaryValue={loc(snowS)}
-			{onToggleUnits}
-		/>
-	{:else if data.rain}
-		{@const [rainP, rainS] = data.rain.displayDual(metricPrimary)}
-		<DetailCard
-			title={$_('detail_precipitation')}
-			value={"\uD83C\uDF27\uFE0F " + loc(rainP)}
-			secondaryValue={loc(rainS)}
-			{onToggleUnits}
-		/>
-	{:else}
-		<DetailCard
-			title={$_('detail_precipitation')}
-			value={$_('no_precip')}
-		/>
-	{/if}
 
 	<DetailCard
 		title={$_('detail_pressure')}
@@ -184,7 +181,7 @@
 	.conditions-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		grid-auto-rows: 1fr;
+		grid-auto-rows: auto;
 		gap: 16px;
 	}
 
@@ -288,34 +285,48 @@
 		font-size: 24px;
 	}
 
-	.temp-now-card {
-		background: rgba(42, 31, 165, 0.6);
-		border-radius: 16px;
-		padding: 16px;
+	.temp-precip-card {
+		align-items: flex-start;
+	}
+
+	.tp-side {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
-		flex: 1;
+		gap: 4px;
 	}
 
-	.temp-now-values {
-		cursor: pointer;
+	.tp-side-end {
+		align-items: flex-end;
 	}
 
-	.temp-now-secondary {
+	.tp-values {
+		display: flex;
+		align-items: baseline;
+		gap: 4px;
+	}
+
+	.tp-values-end {
+		justify-content: flex-end;
+	}
+
+	.tp-primary {
 		font-family: var(--font-display);
-		font-size: 14px;
+		font-size: 18px;
+		font-weight: 700;
+		color: white;
+		font-feature-settings: var(--font-features);
+	}
+
+	.tp-secondary {
+		font-family: var(--font-display);
+		font-size: 12px;
 		color: rgba(255,255,255,0.55);
-		margin-left: 4px;
+		font-feature-settings: var(--font-features);
 	}
 
 	.feels-label {
 		font-size: 12px;
 		color: rgba(255,255,255,0.5);
-	}
-
-	.feels-values {
-		cursor: pointer;
 	}
 
 	.feels-primary {

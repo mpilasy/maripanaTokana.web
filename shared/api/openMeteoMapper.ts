@@ -60,6 +60,7 @@ export function mapToWeatherData(response: OpenMeteoResponse, locationName: stri
 		rain: c.rain > 0 ? Precipitation.fromMm(c.rain) : null,
 		snow: c.snowfall > 0 ? Precipitation.fromMm(c.snowfall) : null,
 		uvIndex: c.uv_index,
+		cloudCover: c.cloud_cover,
 		visibility: Math.round(c.visibility),
 		sunrise: sunriseEpochSec,
 		sunset: sunsetEpochSec,
